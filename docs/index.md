@@ -10,6 +10,9 @@ hero:
     alt: 止危 Logo
   actions:
     - theme: brand
+      text: 演示体验
+      link: https://www.zhiwei-shm.com/app
+    - theme: alt
       text: 快速开始
       link: /guide/quick-start
     - theme: alt
