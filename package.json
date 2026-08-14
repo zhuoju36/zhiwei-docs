@@ -1,6 +1,6 @@
 {
   "name": "zhiwei-docs",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "止危——开源的结构健康监测平台文档",
   "type": "module",
   "scripts": {
