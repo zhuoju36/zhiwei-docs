@@ -2,7 +2,10 @@
 
 ## GitHub
 
-- 仓库地址：https://github.com/zhiwei-shm
+- 仓库：https://github.com/zhiwei-shm
+- 后端：https://github.com/zhiwei-shm/zhiwei/tree/main/shm-backend
+- 前端：https://github.com/zhiwei-shm/zhiwei/tree/main/shm-frontend
+- 文档（本仓库）：https://github.com/zhiwei-shm/zhiwei/tree/main/shm-docs
 - Issue：https://github.com/zhiwei-shm/zhiwei/issues
 - Discussions：https://github.com/zhiwei-shm/zhiwei/discussions
 
@@ -17,5 +20,6 @@
 ## 社区准则
 
 - 提问前请先搜索已有 Issue
-- 提交 Bug 时请提供复现步骤与环境信息
+- 提交 Bug 时请提供复现步骤与环境信息（后端版本、Python 版本、Docker 配置）
 - 欢迎分享你的使用案例与改进建议
+- 遵守 [贡献指南](/developer/contribute) 中的行为准则

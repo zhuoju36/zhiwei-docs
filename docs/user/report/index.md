@@ -1,38 +1,72 @@
 # 报表与导出
 
-报表模块用于定期汇总监测数据、告警事件与设备状态，生成可分享的报告。
+止危当前不提供独立的报表中心，但所有数据均可通过 API 拉取后由前端或 BI 工具自由组装。规划中的报表模板 / 定时生成 / 邮件推送（Celery `reports` 队列）将在 v0.9 后续版本落地。
 
-## 功能概述
+## 现状
 
-- 自定义报表模板（日报、周报、月报）
-- 支持包含曲线、统计表、告警列表等内容
-- 支持定时生成与邮件推送
-- 支持导出为 PDF、Word、Excel
+- **历史数据**：通过 `GET /api/v1/data/timeseries` 按通道 + 时间范围 + 聚合粒度拉取
+- **告警事件**：通过 `GET /api/v1/alerts` 拉取，配合筛选条件
+- **3D 模型附件**：通过 `GET /api/v1/analysis/jobs/{id}/result` 下载 NPZ 等分析附件
+- **导出格式**：CSV / Excel / JSON 取决于前端实现
 
-## 操作步骤
+## 自助导出
 
-### 创建报表模板
+### 通道历史数据
 
-1. 进入「报表中心」
-2. 点击「新建模板」
-3. 选择报表类型与周期
-4. 拖拽添加需要展示的内容块
-5. 保存模板
+```bash
+curl -G http://localhost:8000/api/v1/data/timeseries \
+    -H "Authorization: Bearer $TOKEN" \
+    --data-urlencode "channel_id=1" \
+    --data-urlencode "start=2026-08-01T00:00:00Z" \
+    --data-urlencode "end=2026-08-08T00:00:00Z" \
+    --data-urlencode "interval=1h" \
+    --data-urlencode "format=json"
+```
 
-### 生成报表
+返回结构：
 
-1. 选择报表模板
-2. 设置时间范围
-3. 点击「生成报表」
-4. 预览后导出或分享
+```json
+{
+  "code": "OK",
+  "data": {
+    "channel_id": 1,
+    "interval": "1h",
+    "data": [
+      {"ts": "2026-08-01T00:00:00Z", "value": 0.12, "avg_val": 0.10, "max_val": 0.42, "min_val": -0.31, "rms_val": 0.18},
+      ...
+    ]
+  }
+}
+```
 
-### 定时任务
+### 告警清单
 
-1. 在模板设置中开启「定时生成」
-2. 设置生成周期与推送邮箱
-3. 保存
+```bash
+curl -G http://localhost:8000/api/v1/alerts \
+    -H "Authorization: Bearer $TOKEN" \
+    --data-urlencode "project_id=1" \
+    --data-urlencode "start=2026-08-01T00:00:00Z" \
+    --data-urlencode "end=2026-08-08T00:00:00Z"
+```
+
+### 分析任务附件
+
+```bash
+curl -o fft.npz http://localhost:8000/api/v1/analysis/jobs/42/result \
+    -H "Authorization: Bearer $TOKEN"
+```
+
+`fft.npz` 为 NPZ 格式，可用 `numpy.load(BytesIO(content))` 解析。
+
+## 规划中
+
+- 内置日报 / 周报 / 月报模板
+- 定时生成 + 邮件 / Webhook 推送（Celery `reports` 队列）
+- 与大屏组件复用模板编辑器
+- 数据归档到 MinIO 后离线查询
 
 ## 相关链接
 
 - [数据采集与查看](/user/data/)
 - [告警规则](/user/alarm/)
+- [可视化看板](/user/dashboard/)

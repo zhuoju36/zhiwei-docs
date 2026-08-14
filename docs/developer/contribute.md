@@ -4,10 +4,11 @@
 
 ## 参与方式
 
-- 提交 Issue：反馈 Bug、提出功能建议
-- 提交 PR：修复问题、新增功能、完善文档
-- 分享案例：将你的监测项目经验写成 [实践案例](/examples/bridge)
-- 回答问题：在 Issue 与讨论区帮助其他用户
+- **提交 Issue**：反馈 Bug、提出功能建议
+- **提交 PR**：修复问题、新增功能、完善文档
+- **分享案例**：把你的监测项目经验写成 [实践案例](/examples/bridge)
+- **回答问题**：在 Issue 与讨论区帮助其他用户
+- **开发插件**：发布新的协议适配器或分析算法
 
 ## 开发流程
 
@@ -24,21 +25,56 @@
 - `feat:` 新功能
 - `fix:` 修复 Bug
 - `docs:` 文档更新
-- `style:` 代码格式调整
 - `refactor:` 重构
+- `perf:` 性能优化
 - `test:` 测试相关
 - `chore:` 构建与工具
 
 ## 代码规范
 
-- 前端：使用项目 ESLint / Prettier 配置
-- 后端：遵循项目选定的语言规范
-- 类型：优先使用 TypeScript 类型定义
-- 测试：新增功能请补充对应测试
+### 后端（`shm-backend`）
+
+完整规范见 [`shm-backend/AGENTS.md`](https://github.com/zhiwei-shm/zhiwei/tree/main/shm-backend/AGENTS.md)（**最高优先级**）。要点：
+
+- **异步铁律**：async 函数内禁止阻塞 IO；bcrypt 等 CPU 密集任务走 `loop.run_in_executor`
+- **Pydantic v2**：请求 / 响应模型放在 `schemas/`；统一响应包装在 ASGI 中间件层
+- **SQLAlchemy 2.0 async**：`Mapped[]` 风格；时序热路径（COPY）绕开 ORM 用 asyncpg 原生
+- **错误处理**：业务异常用 `BizException`，路由层捕获后由中间件统一包装
+- **提交前**：`ruff check --fix .` + `ruff format .` + `pytest`
+
+### 前端（`shm-frontend`）
+
+- Vue 3 组合式 API + `<script setup>`
+- TypeScript 类型定义优先使用 `interface`
+- API 请求统一封装到 `api/`，禁止组件直接 `axios.get`
+- 样式优先使用 Element Plus / 项目已有组件
+
+### 文档（`shm-docs`，本仓库）
+
+- VitePress 1.6 语法（frontmatter + Markdown）
+- 修改后本地运行 `npm run docs:dev` 预览（端口 5174）
+- 新增 / 重命名 / 删除页面后同步更新 `.vitepress/config.ts` 的侧边栏
+
+## 测试要求
+
+新增功能请补充对应测试：
+
+- 后端：pytest + pytest-asyncio；fixture 见 `tests/conftest.py`
+- 前端：组件测试与 E2E（vitest / playwright，规划中）
+- 文档：本地构建 `npm run docs:build` 验证无 VitePress 报错
 
 ## 文档贡献
 
-文档位于 `shm-docs/` 目录，使用 VitePress 编写。修改后请本地运行 `pnpm docs:dev` 预览。
+文档位于 `shm-docs/` 目录，使用 VitePress 编写。修改后请本地运行：
+
+```bash
+cd shm-docs
+npm install
+npm run docs:dev        # 本地预览（http://localhost:5174）
+npm run docs:build      # 生产构建（产出 docs/.vitepress/dist/）
+```
+
+修改 `docs/.vitepress/config.ts` 的导航与侧边栏时请保持与现有风格一致（侧边栏按用户手册 / 开发者 / 部署分组）。
 
 ## 行为准则
 
@@ -50,3 +86,5 @@
 
 - [开发环境](/developer/environment)
 - [接口文档](/developer/api/)
+- [后端模块](/developer/backend/)
+- [插件开发](/developer/plugin/)

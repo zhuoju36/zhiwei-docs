@@ -1,54 +1,100 @@
 # 配置项说明
 
-本文汇总止危所有可配置项，涵盖环境变量与配置文件。
+本文汇总止危后端可配置的环境变量。所有变量由 Pydantic Settings（`app/config.py`）加载，默认值见 `.env.example`。
 
-## 通用配置
+## 数据库
 
-| 变量名 | 默认值 | 说明 |
+| 变量 | 默认值 | 说明 |
 | --- | --- | --- |
-| `NODE_ENV` | `production` | 运行环境 |
-| `ZHIWEI_PORT` | `8080` | 前端访问端口 |
-| `ZHIWEI_API_URL` | `http://localhost:3000` | 后端 API 地址 |
+| `DATABASE_URL` | `postgresql+asyncpg://shm_user:shm_pass@localhost:5432/shm_db` | SQLAlchemy 异步 DSN；容器内把 `localhost` 换成 `postgres` |
+| `TIMESCALE_ENABLED` | `true` | 是否启用 TimescaleDB 特性（hypertable / 连续聚合 / 保留策略） |
 
-## 数据库配置
+`Settings.asyncpg_dsn` 自动把 `postgresql+asyncpg://` 转为 `postgresql://`，供 asyncpg 原生驱动使用。
 
-| 变量名 | 默认值 | 说明 |
+## 缓存与消息
+
+| 变量 | 默认值 | 说明 |
 | --- | --- | --- |
-| `POSTGRES_HOST` | `postgres` | PostgreSQL 主机 |
-| `POSTGRES_PORT` | `5432` | PostgreSQL 端口 |
-| `POSTGRES_USER` | `admin` | 数据库用户名 |
-| `POSTGRES_PASSWORD` | `admin` | 数据库密码 |
-| `POSTGRES_DB` | `zhiwei` | 数据库名 |
+| `REDIS_URL` | `redis://localhost:6379/0` | 缓存 + Pub/Sub；容器内用 `redis:6379` |
+| `CELERY_BROKER_URL` | `redis://localhost:6379/1` | Celery broker（独立 db） |
+| `CELERY_RESULT_BACKEND` | `redis://localhost:6379/2` | Celery 结果后端（独立 db） |
 
-## 时序数据库配置
+## 对象存储（MinIO）
 
-| 变量名 | 默认值 | 说明 |
+| 变量 | 默认值 | 说明 |
 | --- | --- | --- |
-| `TSDB_HOST` | `timescaledb` | 时序数据库主机 |
-| `TSDB_PORT` | `5432` | 时序数据库端口 |
-| `TSDB_USER` | `admin` | 用户名 |
-| `TSDB_PASSWORD` | `admin` | 密码 |
+| `MINIO_ENDPOINT` | `localhost:9000` | 容器内用 `minio:9000` |
+| `MINIO_ACCESS_KEY` | `minio_admin` | 与 `MINIO_ROOT_USER` 对齐 |
+| `MINIO_SECRET_KEY` | `change_me` | 与 `MINIO_ROOT_PASSWORD` 对齐 |
+| `MINIO_BUCKET` | `shm-models` | 3D 模型与分析附件桶 |
 
-## 缓存与消息队列
+## 安全
 
-| 变量名 | 默认值 | 说明 |
+| 变量 | 默认值 | 说明 |
 | --- | --- | --- |
-| `REDIS_HOST` | `redis` | Redis 主机 |
-| `REDIS_PORT` | `6379` | Redis 端口 |
-| `MQTT_HOST` | `mqtt` | MQTT Broker 主机 |
-| `MQTT_PORT` | `1883` | MQTT 端口 |
+| `SECRET_KEY` | `dev-only-secret-key-change-in-production` | JWT 签名密钥，**生产必须替换为 256 位随机** |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | `15` | access token 过期时间 |
+| `REFRESH_TOKEN_EXPIRE_DAYS` | `7` | refresh token 过期时间 |
+| `EDGE_API_KEY` | `edge-secret-key` | 边缘网关接入 API Key，**生产必须替换** |
+| `CORS_ORIGINS` | `["http://localhost:5173"]` | 前端域名列表，**生产禁止 `["*"]`** |
 
-## 安全相关
+## 跨域
 
-| 变量名 | 默认值 | 说明 |
+| 变量 | 默认值 | 说明 |
 | --- | --- | --- |
-| `JWT_SECRET` | - | JWT 签名密钥 |
-| `ZHIWEI_ADMIN_USER` | `admin` | 初始管理员账号 |
-| `ZHIWEI_ADMIN_PASSWORD` | `admin` | 初始管理员密码 |
+| `CORS_ORIGINS` | `["http://localhost:5173"]` | 允许跨域的前端地址列表（JSON 数组） |
 
-> 生产环境请务必修改默认密码与 JWT 密钥。
+## 告警通知（v0.5+，全局配置）
+
+```dotenv
+# Webhook 通道
+WEBHOOK_URL=                     # 例：https://oapi.dingtalk.com/robot/send?access_token=...
+WEBHOOK_HEADERS=                 # JSON 字符串，如 '{"X-Custom":"v1"}'
+WEBHOOK_TIMEOUT_SECONDS=10
+
+# Email 通道
+SMTP_HOST=
+SMTP_PORT=587
+SMTP_USER=
+SMTP_PASSWORD=
+SMTP_USE_TLS=true
+SMTP_FROM=                        # 默认等于 SMTP_USER
+ALERT_EMAIL_TO=                  # 逗号分隔
+```
+
+任一通道未配置则跳过；告警新建 / 重开时多通道并发派发，失败隔离。
+
+## 首次部署引导（setup）
+
+```dotenv
+ADMIN_USERNAME=admin
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD='admin12345'
+```
+
+`docker/entrypoint.sh` 在容器启动时若以上环境变量齐备，会自动调用 `python -m scripts.init_admin`。生产推荐用 Docker Secrets / Kubernetes Secret 注入敏感字段，避免明文写入 compose 文件。
+
+## 监控（v0.5+，可选）
+
+```dotenv
+# Prometheus metrics 暴露在 /metrics
+METRICS_ENABLED=true
+```
+
+## 文档站
+
+`shm-docs`（本仓库）的 `package.json` 仅暴露前端命令：
+
+| 命令 | 说明 |
+| --- | --- |
+| `npm run docs:dev` | 本地开发（端口 5174） |
+| `npm run docs:build` | 生产构建（产出 `docs/.vitepress/dist/`） |
+| `npm run docs:preview` | 本地预览生产产物（端口 5174） |
+
+经 `shm-gateway` 网关以 `/docs/` 子路径挂载；`vitepress.config.ts` 中 `base: '/docs/'`。
 
 ## 相关链接
 
 - [Docker 部署](/deploy/docker)
 - [备份与恢复](/deploy/backup)
+- [后端开发环境](https://github.com/zhiwei-shm/zhiwei/tree/main/shm-backend/docs/development/setup.md)

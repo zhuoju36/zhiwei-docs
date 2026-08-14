@@ -41,7 +41,6 @@ export default defineConfig({
           text: '用户手册',
           items: [
             { text: '项目管理', link: '/user/project/' },
-            { text: '结构物与测点', link: '/user/structure/' },
             { text: '传感器与通道', link: '/user/sensor/' },
             { text: '数据采集与查看', link: '/user/data/' },
             { text: '告警规则', link: '/user/alarm/' },

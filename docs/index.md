@@ -22,13 +22,13 @@ hero:
 features:
   - icon: 📡
     title: 多源数据接入
-    details: 支持 MQTT、HTTP、Modbus 等主流协议，统一接入振弦、应变、加速度、温湿度等多种传感器。
+    details: 内置 MQTT、HTTP、Modbus TCP 与 DTU 透传（Modbus RTU over TCP）适配器，统一接入振弦、应变、加速度、温湿度等传感器。
   - icon: ⚡
     title: 实时在线分析
-    details: 内置特征值提取、趋势分析、阈值告警与频谱分析，让结构异常第一时间被发现。
+    details: 阈值告警、FFT 频谱、基础统计等算法以插件形式挂载，按通道异步评估与计算，结构异常第一时间被发现。
   - icon: 🖥️
     title: 可视化数字孪生
-    details: 基于 Web 的 2D/3D 可视化看板，将测点、传感器、告警事件与结构模型实时联动。
+    details: 基于 Web 的 2D/3D 可视化看板，OBJ/STL/PLY/glTF/GLB 模型自动转 GLB 后与通道实时联动。
 ---
 
 ## 快速预览
@@ -38,11 +38,30 @@ features:
 git clone https://github.com/zhiwei-shm/zhiwei.git
 cd zhiwei
 
-# 2. 一键启动
-docker compose up -d
+# 2. 启动后端基础设施（PostgreSQL/TimescaleDB、Redis、MinIO）
+cd shm-backend
+docker compose up -d postgres redis minio
 
-# 3. 打开浏览器访问 http://localhost:8080
+# 3. 初始化数据库与首个管理员
+.venv/bin/alembic upgrade head
+.venv/bin/python -m scripts.init_db
+.venv/bin/python -m scripts.init_admin
+
+# 4. 启动 API
+.venv/bin/python -m uvicorn app.main:app --reload
 ```
+
+打开 `http://localhost:8000/docs` 查看 Swagger UI；首次访问 `http://localhost:8000/setup` 创建第一个 admin 后即可登录。
+
+## 六层数据拓扑
+
+止危把监测对象组织成一棵六层拓扑树：
+
+```
+用户 → 项目 → 设备 → 传感器（位置 + 仪器元数据）→ 通道（单位 / 采样率 / 告警规则）→ 读数
+```
+
+时序数据、告警、分析任务一律按 **通道** 粒度寻址；传感器即测点，一测点对应一个仪器。
 
 ## 适用场景
 
