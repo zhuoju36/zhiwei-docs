@@ -93,6 +93,28 @@ METRICS_ENABLED=true
 
 经 `shm-gateway` 网关以 `/docs/` 子路径挂载；`vitepress.config.ts` 中 `base: '/docs/'`。
 
+## 采集器（`shm-collector`）
+
+`shm-collector` 独立部署时可通过 TOML 文件或环境变量配置。环境变量以 `SHM_COLLECTOR__` 开头，双下划线为层级分隔（覆盖 TOML 同名键）。
+
+| 变量 | 默认值 | 说明 |
+| --- | --- | --- |
+| `SHM_COLLECTOR__SERVER__BACKEND_URL` | `http://localhost:8000` | 后端 base URL（指向 `/api/v1/data/ingest`） |
+| `SHM_COLLECTOR__SERVER__API_KEY` | — | 必须与后端 `EDGE_API_KEY` 一致 |
+| `SHM_COLLECTOR__SERVER__BATCH_SIZE` | `2000` | 单次推送 readings 条数 |
+| `SHM_COLLECTOR__SERVER__FLUSH_INTERVAL_MS` | `1000` | 攒批最大等待时间 |
+| `SHM_COLLECTOR__SERVER__REQUEST_TIMEOUT_MS` | `10000` | 单次 HTTP 请求超时 |
+| `SHM_COLLECTOR__SERVER__RETRY_MAX` | `3` | 失败重试次数 |
+| `SHM_COLLECTOR__CACHE__BACKEND` | `sqlite` | 断网缓存后端（`sqlite` / `memory`） |
+| `SHM_COLLECTOR__CACHE__PATH` | `/var/lib/shm-collector/buffer.db` | SQLite 文件路径 |
+| `SHM_COLLECTOR__CACHE__MAX_SIZE_BYTES` | `1073741824` | 缓存软上限（1 GiB） |
+| `SHM_COLLECTOR__LOG__LEVEL` | `INFO` | `DEBUG` / `INFO` / `WARNING` / `ERROR` |
+| `SHM_COLLECTOR__LOG__FORMAT` | `json` | `json` / `text` |
+| `SHM_COLLECTOR__METRICS__ENABLED` | `true` | 是否暴露 `/metrics` |
+| `SHM_COLLECTOR__METRICS__PORT` | `9090` | metrics 端口 |
+
+配置文件路径：`--config /etc/shm-collector/config.toml`（也可挂 ConfigMap）。详细字段见 [数据采集器](/developer/collector/#配置toml草案)。
+
 ## 相关链接
 
 - [Docker 部署](/deploy/docker)

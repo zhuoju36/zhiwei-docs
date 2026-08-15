@@ -4,15 +4,18 @@ FROM node:20-alpine AS build
 # VitePress 构建需要 git 计算页面「最后更新」时间
 RUN apk add --no-cache git
 
+# 启用 pnpm
+RUN corepack enable && corepack prepare pnpm@10.16.0 --activate
+
 WORKDIR /app
 
 # 先复制依赖清单，充分利用 Docker 层缓存
-COPY package.json package-lock.json ./
-RUN npm ci
+COPY package.json pnpm-lock.yaml .npmrc* ./
+RUN pnpm install --frozen-lockfile
 
 # 复制源码并构建静态站点
 COPY . .
-RUN npm run docs:build
+RUN pnpm run docs:build
 
 # ============ 运行阶段 ============
 FROM nginx:stable-alpine AS runtime

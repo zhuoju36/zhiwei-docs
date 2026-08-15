@@ -14,12 +14,13 @@
 ```
 zhiwei/
 ├── shm-backend/      # 后端（FastAPI + Celery + 插件）
+├── shm-collector/    # 数据采集器（独立进程，可选；v1.0 起重新独立）
 ├── shm-frontend/     # 前端（Vue 3 + Element Plus + Three.js）
 ├── shm-docs/         # 本项目（VitePress 文档站）
 └── shm-mock/         # （可选）前端本地 mock 数据
 ```
 
-> `shm-collector` 已合并到 `shm-backend`：协议适配器与边缘网关参考脚本都收在后端仓库内。
+> v0.9 期间 `shm-collector` 与 `shm-backend` 共进程；v1.0 起重新独立为独立仓，详见 [数据采集器](/developer/collector/)。
 
 ## 1. 克隆仓库
 

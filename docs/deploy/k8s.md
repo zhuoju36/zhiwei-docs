@@ -17,6 +17,7 @@
 | --- | --- | --- | --- | --- |
 | `api` | Deployment | 2+ | — | FastAPI，含 WebSocket |
 | `worker` | Deployment | 2+ | — | Celery Worker，4 队列并发 |
+| `collector` | DaemonSet / Deployment | 1+（按边缘节点） | EmptyDir / PVC（断网缓存） | 边缘采集进程（可选，中央采集场景不部署） |
 | `postgres` | StatefulSet | 1 | PVC（推荐 SSD，≥ 100 GB） | timescale/timescaledb 镜像 |
 | `redis` | Deployment | 1 | — | redis:7-alpine |
 | `minio` | StatefulSet | 1 | PVC（≥ 500 GB） | 单节点即可，生产建议分布式 |
@@ -124,6 +125,60 @@ Worker 类似，把 `command` 改成：
 command: ["celery", "-A", "app.tasks.celery_app:celery_app", "worker",
           "-Q", "alerts,analysis,reports,maintenance", "-c", "4", "-l", "info"]
 ```
+
+## Collector Deployment
+
+边缘采集场景下增加的 `collector` 建议部署为 **DaemonSet**（每个边缘节点一个 Pod），也可用 Deployment 部署多副本做容灾。最小化清单：
+
+```yaml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: shm-collector
+  namespace: shm
+spec:
+  selector:
+    matchLabels: { app: shm-collector }
+  template:
+    metadata:
+      labels: { app: shm-collector }
+    spec:
+      containers:
+        - name: collector
+          image: ghcr.io/zhiwei-shm/shm-collector:1.0.0
+          args: ["--config", "/etc/shm-collector/config.toml"]
+          ports:
+            - { containerPort: 9090, name: metrics }
+          env:
+            - name: SHM_COLLECTOR__SERVER__BACKEND_URL
+              value: "http://shm-api:8000"
+            - name: SHM_COLLECTOR__SERVER__API_KEY
+              valueFrom: { secretKeyRef: { name: shm-secret, key: EDGE_API_KEY } }
+          volumeMounts:
+            - { name: config, mountPath: /etc/shm-collector, readOnly: true }
+            - { name: buffer, mountPath: /var/lib/shm-collector }
+          readinessProbe:
+            httpGet: { path: /healthz, port: 9090 }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits:   { cpu: 1,    memory: 512Mi }
+      volumes:
+        - name: config
+          configMap: { name: shm-collector-config }
+        - name: buffer
+          emptyDir: {}   # 断网缓存：PVC 需 emptyDir.medium=Memory 或换 hostPath
+```
+
+`ConfigMap` 由 `config.toml` 生成：
+
+```bash
+kubectl -n shm create configmap shm-collector-config \
+    --from-file=config.toml=./collector/config.toml
+```
+
+> 节点亲和性 / 反亲和性 / PodDisruptionBudget 等生产配置按需扩展。
 
 ## 4. 迁移流水线
 

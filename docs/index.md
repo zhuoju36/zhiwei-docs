@@ -18,9 +18,12 @@ hero:
     - theme: alt
       text: 什么是止危
       link: /guide/what-is-zhiwei
-    - theme: alt
-      text: GitHub
-      link: https://github.com/zhiwei-shm
+    # - theme: alt
+    #   text: GitHub
+    #   link: https://github.com/zhiwei-shm
+    # - theme: alt
+    #   text: Gitee
+    #   link: https://gitee.com/zhuoju36/zhiwei-shm
 
 features:
   - icon: 📡

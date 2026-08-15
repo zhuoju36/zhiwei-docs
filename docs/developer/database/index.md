@@ -202,8 +202,93 @@ SELECT add_retention_policy('readings', INTERVAL '7 days');
 
 迁移仅管理**关系表结构**；hypertable / 连续聚合 / 保留策略由 `scripts/init_db.py` 维护（幂等可重跑）。
 
+## 迁移历史
+
+| 迁移 | 版本 | 说明 |
+|------|------|------|
+| `dda0b01608f9` | v0.1 | 初始 8 表 |
+| `6c0943361e16` | v0.4 | `analysis_jobs`；drop Timescale 自动索引（IF EXISTS） |
+| `7c74c5b67148` | v0.7 | `platform_settings` |
+| `1e4cdedf9b41` | v0.8a | projects → projects（术语调整，v0.9 回退） |
+| `af5a7548852c` | v0.8b | sensors / channels / readings；drop sensor_raw / sensor_feature；alerts / analysis_jobs 改 channel_id |
+| `c4f21bee2f8b` | v0.8c | 3d_models 表；drop `projects.model_file_key` |
+| `0c8f4e8484f3` | v0.9 | **重置重构**：point 并入 sensor（sensors 挂 device 下）；subitem → project；全部业务表重建 |
+
+## 告警生命周期（v0.8b+）
+
+```
+每批 readings 触发 _dispatch_alert_check → Celery alerts 队列 → check_threshold_batch
+  │
+  ▼
+对每个 reading:
+  for rule in channel.alert_rules:
+    if rule.matches(value):
+      → trigger_alert(channel_id, level, value, ...)
+        · 无未恢复告警 → INSERT (started_at=reading.timestamp)
+        · 已存在 → UPDATE value/threshold（保留 started_at）
+    if open_but_not_triggered:
+      → close_open_alerts(channel_id, level, reading.timestamp)
+        · UPDATE ended_at=ts, is_resolved=true
+  │
+  ▼
+新增/关闭的 alert → Redis Pub/Sub project:{id} → WebSocket data:alert
+```
+
+每条未恢复告警按 `(channel_id, level)` 唯一。持续触发不重复创建；值回到正常范围自动关闭。v0.5 起支持 `suppress_seconds` 抑制窗口：窗口内再次触发复用最近一条已关闭告警（重开）。
+
+## 写入热路径（`app/services/data_service.py`）
+
+```python
+async def batch_ingest(readings: list[ReadingIn]) -> int:
+    async with pool.acquire() as conn:
+        code_map = await _resolve_code_map(conn, readings)  # 一次 JOIN: device→sensor→channel
+        records = [
+            (r.timestamp, cid, r.value, r.quality, json.dumps(r.extra))
+            for r in readings
+            if (r.device_code, r.channel_code) in code_map
+        ]
+        await conn.copy_records_to_table(
+            "readings",
+            records=records,
+            columns=["time", "channel_id", "value", "quality", "metadata"],
+        )
+    await _publish_realtime(accepted)  # Redis SET + PUBLISH project:{id}
+    await _dispatch_alert_check(accepted)  # Celery alerts 队列
+```
+
+要点：
+- 编码映射 JOIN 链（device → sensor → channel，3 表）仍一次查询；单通道 1 万条写入 < 3s
+- `channel_code` 全局唯一可定位（`devices.device_code` + `channels.channel_code`）
+
+## 查询路由
+
+`DataService.query_timeseries(channel_id, start, end, interval)`：
+
+| 条件 | 数据源 |
+|------|--------|
+| 全部（v0.8b+） | `readings` 原始表 |
+| v1.0+：`interval ∈ {1m,1h,1d}` | readings 上的连续聚合视图 |
+
+## 数据库连接池
+
+- SQLAlchemy engine（`app/database.py`）：`pool_size=20, max_overflow=30, pool_pre_ping=True, pool_recycle=3600`
+- asyncpg pool（`app/services/data_service.py:get_pool`）：`min_size=5, max_size=20, command_timeout=60`，懒初始化
+- 测试场景使用 session 级 event loop，避免连接池跨 loop 绑定错误（`pyproject.toml`）
+
+## 性能基准目标
+
+| 指标 | 目标 | 实现路径 |
+|------|------|----------|
+| 高频写入 | 10万点/秒 | 边缘预处理 + COPY + 分区 |
+| 实时查询延迟 | < 100ms | Redis 缓存最新值 |
+| 历史查询（1天） | < 2s | readings + 索引 |
+
+集成测试 `tests/test_data_ingest.py::test_batch_ingest_performance` 断言 1 万条写入 < 3s。
+
 ## 相关链接
 
 - [后端模块](/developer/backend/)
+- [后端架构](/developer/architecture-backend.html)
 - [接入协议](/developer/protocol/)
+- [测试](/developer/testing.html)
 - [接口文档](/developer/api/)

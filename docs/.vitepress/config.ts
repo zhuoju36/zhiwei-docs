@@ -54,9 +54,48 @@ export default defineConfig({
           text: '开发者',
           items: [
             { text: '开发环境', link: '/developer/environment' },
-            { text: '前端模块', link: '/developer/frontend/' },
-            { text: '后端模块', link: '/developer/backend/' },
-            { text: '接口文档', link: '/developer/api/' },
+            {
+              text: '前端',
+              collapsed: false,
+              items: [
+                { text: '前端模块', link: '/developer/frontend/' },
+                { text: '前端开发规范', link: '/developer/frontend-coding' }
+              ]
+            },
+            {
+              text: '后端',
+              collapsed: false,
+              items: [
+                { text: '后端模块', link: '/developer/backend/' },
+                { text: '后端架构', link: '/developer/architecture-backend' },
+                { text: '代码规范', link: '/developer/coding-standards' },
+                { text: '测试', link: '/developer/testing' },
+                { text: '模拟与冒烟', link: '/developer/simulation' }
+              ]
+            },
+            { text: '数据采集器', link: '/developer/collector/' },
+            {
+              text: '接口文档',
+              collapsed: false,
+              items: [
+                { text: '概览', link: '/developer/api/' },
+                { text: '认证', link: '/developer/api/auth' },
+                { text: '用户管理', link: '/developer/api/users' },
+                { text: '首次部署', link: '/developer/api/setup' },
+                { text: '平台元数据', link: '/developer/api/platform' },
+                { text: '项目', link: '/developer/api/projects' },
+                { text: '设备', link: '/developer/api/devices' },
+                { text: '传感器', link: '/developer/api/sensors' },
+                { text: '通道', link: '/developer/api/channels' },
+                { text: '协议', link: '/developer/api/protocols' },
+                { text: '时序数据', link: '/developer/api/data' },
+                { text: '告警', link: '/developer/api/alerts' },
+                { text: '分析', link: '/developer/api/analysis' },
+                { text: '3D 模型', link: '/developer/api/models' },
+                { text: '大屏', link: '/developer/api/dashboard' },
+                { text: '通知', link: '/developer/api/notifications' }
+              ]
+            },
             { text: '数据模型', link: '/developer/database/' },
             { text: '接入协议', link: '/developer/protocol/' },
             { text: '插件开发', link: '/developer/plugin/' },
@@ -110,7 +149,15 @@ export default defineConfig({
     },
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/zhiwei-shm' }
+      { icon: 'github', link: 'https://github.com/zhiwei-shm' },
+      {
+        icon: {
+          // 引用 docs/.vitepress/public/gitee.svg（静态资源，非 inline）
+          svg: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 90 90" style="width: 20px; height: 20px"><image href="./gitee.svg" xlink:href="./gitee.svg"/></svg>'
+        },
+        link: 'https://gitee.com/zhuoju36/zhiwei-shm',
+        ariaLabel: 'gitee'
+      }
     ],
 
     footer: {

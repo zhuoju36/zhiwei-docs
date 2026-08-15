@@ -4,6 +4,17 @@
 
 v0.9 起按**通道**寻址：上报报文携带 `device_code + channel_code`（而非过时的 `point_code`），云端通过 device → sensor → channel 的 JOIN 链解析为 `channel_id` 后写入 `readings` hypertable。
 
+## 部署方式选择
+
+止危支持两种协议部署位置，二选一：
+
+- **中央采集（默认）**：协议适配器作为后端插件运行在 `shm-backend` 进程内。
+  优点：零额外运维；缺点：协议逻辑与业务 API 共进程，升级协议需重启后端。
+- **边缘采集**：协议适配器作为 `shm-collector` 独立进程运行在边缘节点。
+  优点：可独立升级、断网缓存、内网隔离、协议本地聚合；缺点：协议适配器需独立维护、与后端插件接口签名一致但代码不通用。
+
+选择标准与详细差异见 [数据采集器](/developer/collector/#何时使用)。下方各协议章节都同时支持两种部署位置。
+
 ## 标准上报报文
 
 设备 / 边缘网关上报到 `POST /api/v1/data/ingest` 的 JSON：

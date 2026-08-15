@@ -24,6 +24,9 @@
 **采样频率（Sampling Rate）**
 通道每秒钟采集的样本数，单位 Hz。挂在通道（channel）层而非传感器层。
 
+**采集器（Collector）**
+`shm-collector` 独立边缘数据采集进程。负责协议适配、本地缓存与标准化，按标准 `readings` 报文通过 `POST /api/v1/data/ingest`（`X-API-Key`）上报到 FastAPI 后端。与后端 `app/plugins/protocols/` 的协议适配器**接口签名一致但代码独立**。详见 [数据采集器](/developer/collector/)。
+
 **采集设备（Device）**
 挂在项目下的硬件网关或采集仪，绑定一种协议（modbus_tcp / mqtt / http_json / modbus_rtu_over_tcp）。
 
@@ -35,6 +38,9 @@ v0.9 起**测点与传感器合一**：同时携带位置（`position: {x,y,z}`�
 
 **Continuous Aggregate**
 TimescaleDB 的物化视图自动刷新机制，用于降采样。规划中。
+
+**中央采集 / 边缘采集（Central / Edge Collection）**
+两种协议部署位置：中央采集指协议适配器作为后端插件运行在 `shm-backend` 进程内；边缘采集指协议适配器作为独立 `shm-collector` 进程部署在边缘节点。两者功能等价，差异见 [数据采集器](/developer/collector/#何时使用)。
 
 ## D
 

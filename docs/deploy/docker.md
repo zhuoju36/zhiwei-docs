@@ -19,6 +19,9 @@
 | `minio` | `minio/minio:latest` | 9000 / 9001 | 对象存储（控制台在 9001） |
 | `api` | `Dockerfile` | 8000 | FastAPI 主服务（含 WebSocket `/ws/data`） |
 | `worker` | `Dockerfile` | — | Celery Worker（`alerts` / `analysis` / `reports` / `maintenance` 4 队列） |
+| `collector` | `ghcr.io/zhiwei-shm/shm-collector:1.0.0` | `9090`（metrics） | 边缘采集进程（可选；中央采集场景无需启动） |
+
+> 边缘部署时加入 `shm-collector` 仓提供的镜像与服务，使用独立 `docker-compose.override.yml` 或单独的 compose 文件管理。详见 [数据采集器](/developer/collector/#部署)。
 
 ## 1. 准备配置文件
 
@@ -182,6 +185,78 @@ docker inspect --format '{{.State.Health.Status}}' zhiwei-docs
 4. **资源限制**：在 `docker-compose.yml` 中为各服务配置 `mem_limit` 与 `cpus`
 5. **敏感信息**：用 Docker Secrets / Vault 注入 `SECRET_KEY` / `EDGE_API_KEY` / 数据库密码
 6. **定期备份**：参考 [备份与恢复](/deploy/backup)
+7. **安全基线**：替换所有默认密钥（`SECRET_KEY`、`EDGE_API_KEY`、数据库 / MinIO 密码）；`CORS_ORIGINS` 收敛到生产域名（删除 `*`）；Postgres / Redis / MinIO 仅监听内网端口；`pg_hba.conf` 仅允许应用网段
+8. **HTTPS / WSS 终止**：由 Nginx 完成
+9. **监控指标**：应用 `prometheus-fastapi-instrumentator` + `/metrics`；数据库用 `pg_stat_statements` + TimescaleDB 官方仪表盘；Redis 用 `redis_exporter`；业务侧自定义告警（阈值越界、写入延迟、连接池饱和度）
+10. **容量规划基线**：高频写入 10万点/秒、实时查询 < 100ms、历史查询（1天）< 2s、3D 模型加载 < 5s（100MB GLB）、WebSocket 并发 500+、可用性 99.9%
+
+## Nginx 反代最小配置
+
+```nginx
+upstream shm_api { server api:8000; }
+
+server {
+    listen 80;
+    location /api/ {
+        proxy_pass http://shm_api;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+    location /ws/ {
+        proxy_pass http://shm_api;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}
+```
+
+## Worker 启动
+
+```bash
+celery -A app.tasks.celery_app:celery_app worker \
+    -Q alerts,analysis,reports,maintenance -c 4 -l info
+```
+
+注意：Celery task 函数内**必须自己管理 DB 连接**（不能复用 FastAPI 的 session 注入），用 `with engine.connect()` 或独立 `async_session`。
+
+## 迁移流水线
+
+`docker-compose.yml` 的 `api` 服务 entrypoint（`docker/entrypoint.sh`）启动前自动执行：
+
+```
+等 Postgres ready → alembic upgrade head（幂等）→ scripts/init_db（hypertable/保留策略，幂等）→ init_admin（可选）→ 启动 uvicorn
+```
+
+`worker` / `dtu-server` 通过 `depends_on: api (service_healthy)` 保证在迁移完成后才启动。**首次 `docker compose up -d` 即完成建表与 TimescaleDB 初始化**，无需手动步骤。
+
+生产可选更严格的**独立 migration job**（一次性容器执行迁移后退出），api 启动时关闭自动迁移——`entrypoint.sh` 中迁移步骤幂等，两种模式可共存；多实例部署时由 `api` healthcheck 串行化迁移（避免多容器同时跑 `alembic` 竞争）。
+
+## 边缘网关接入
+
+`v0.3` 提供**参考实现** `scripts/run_edge_adapter.py`，演示完整调用模式：
+
+- 接收 `--device-code`、`--protocol`、`--host`、`--port` 参数
+- 从 `AdapterRegistry.get(protocol)` 实例化适配器
+- 循环 `connect → read_batch → POST /api/v1/data/ingest → sleep`
+- Ctrl+C 优雅关闭
+
+**生产部署时不应直接使用参考脚本**，应：
+1. 拆为独立服务（FastAPI 进程外 / 独立 Docker / 工控机部署）
+2. 实现断网本地缓存（SQLite/Redis）与恢复后补发
+3. 接入设备健康监控与配置热更新
+
+参考运行命令（配合 modbus_simulator 演示）：
+
+```bash
+.venv/bin/python -m scripts.modbus_simulator --port 5020 --rate-hz 2 &
+.venv/bin/python -m scripts.run_edge_adapter \
+    --device-code GW-MODBUS-DEMO \
+    --protocol modbus_tcp \
+    --host 127.0.0.1 --port 5020
+```
+
+> 推荐改为使用 [数据采集器](/developer/collector/) —— v1.0 起从后端拆出，独立部署、协议适配自带、断网缓存开箱即用。
 
 ## 故障排查
 

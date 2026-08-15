@@ -29,15 +29,22 @@
 - [ ] OPC-UA 适配器
 - [ ] 模态分析插件
 - [ ] 趋势预测插件
-- [ ] 完整边缘网关进程（断网续传、健康监控）
 - [ ] 审计日志（关键操作写入 `audit_logs`）
 - [ ] 首次登录强制改密码
 - [ ] zxcvbn 密码强度评分
 
-## v1.0 远期
+## v1.0 计划
 
+- [ ] `shm-collector` 独立仓与中央 / 边缘双采集模式（v0.9 → v1.0 文档迁移已完成）
+- [ ] 完整边缘网关进程：断网续传（本地 SQLite 队列）、健康监控、Prometheus `/metrics`
+- [ ] 协议适配器代码双份维护（v2 路线：抽共同解析到独立包）
+- [ ] 后端 + collector 共同 Docker 镜像发布流水线
 - [ ] Kubernetes 化部署 + Helm Chart
 - [ ] HTTPS / WSS 终止 + cert-manager 集成
+
+## v1.0 远期
+
+- [ ] Collector 直写 TimescaleDB（持有 DB 用户，跳过 FastAPI，适合超大规模边缘场景）
 - [ ] 跨区域复制（Postgres logical replication + MinIO 跨区）
 - [ ] 多租户隔离
 - [ ] 移动端适配（PWA / 微信小程序）
