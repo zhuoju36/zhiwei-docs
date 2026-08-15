@@ -2,7 +2,7 @@
 
 止危采用 MIT 协议开源。
 
-完整协议内容请查看仓库根目录下的 [LICENSE](https://github.com/zhiwei-shm/zhiwei/blob/main/LICENSE) 文件。
+完整协议内容请查看仓库根目录下的 [LICENSE](https://github.com/zhuoju36/zhiwei-shm/blob/main/LICENSE) 文件。
 
 ## 摘要
 

@@ -149,7 +149,7 @@ export default defineConfig({
     },
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/zhiwei-shm' },
+      { icon: 'github', link: 'https://github.com/zhuoju36/zhiwei-shm' },
       {
         icon: {
           // 引用 docs/.vitepress/public/gitee.svg（静态资源，非 inline）
@@ -166,7 +166,7 @@ export default defineConfig({
     },
 
     editLink: {
-      pattern: 'https://github.com/zhiwei-shm/zhiwei-docs/edit/main/docs/:path',
+      pattern: 'https://github.com/zhuoju36/zhiwei-docs/edit/main/docs/:path',
       text: '在 GitHub 上编辑此页'
     },
 

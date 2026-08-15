@@ -141,4 +141,4 @@ v0.9 未实现应用层限流。生产建议在 Nginx 或 API Gateway 层加 IP 
 | v0.8 | — | 引入 channel 概念，告警规则下沉到 channel |
 | v0.7 | — | 引入平台元数据 + setup 端点 |
 
-后端仓库 [`shm-backend/docs/api/`](https://github.com/zhiwei-shm/zhiwei/tree/main/shm-backend/docs/api/) 保留权威源；本文档与之同步维护。
+后端仓库 [`shm-backend/docs/api/`](https://github.com/zhuoju36/zhiwei-backend/tree/main/docs/api/) 保留权威源；本文档与之同步维护。

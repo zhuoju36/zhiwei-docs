@@ -20,7 +20,7 @@ hero:
       link: /guide/what-is-zhiwei
     # - theme: alt
     #   text: GitHub
-    #   link: https://github.com/zhiwei-shm
+    #   link: https://github.com/zhuoju36/zhiwei-shm
     # - theme: alt
     #   text: Gitee
     #   link: https://gitee.com/zhuoju36/zhiwei-shm
@@ -41,7 +41,7 @@ features:
 
 ```bash
 # 1. 克隆仓库
-git clone https://github.com/zhiwei-shm/zhiwei.git
+git clone https://github.com/zhuoju36/zhiwei-shm.git
 cd zhiwei
 
 # 2. 启动后端基础设施（PostgreSQL/TimescaleDB、Redis、MinIO）

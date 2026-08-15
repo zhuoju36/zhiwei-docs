@@ -2,12 +2,12 @@
 
 ## GitHub
 
-- 仓库：https://github.com/zhiwei-shm
-- 后端：https://github.com/zhiwei-shm/zhiwei/tree/main/shm-backend
-- 前端：https://github.com/zhiwei-shm/zhiwei/tree/main/shm-frontend
-- 文档（本仓库）：https://github.com/zhiwei-shm/zhiwei/tree/main/shm-docs
-- Issue：https://github.com/zhiwei-shm/zhiwei/issues
-- Discussions：https://github.com/zhiwei-shm/zhiwei/discussions
+- 仓库：https://github.com/zhuoju36/zhiwei-shm
+- 后端：https://github.com/zhuoju36/zhiwei-backend
+- 前端：https://github.com/zhuoju36/zhiwei-frontend
+- 文档（本仓库）：https://github.com/zhuoju36/zhiwei-docs
+- Issue：https://github.com/zhuoju36/zhiwei-shm/issues
+- Discussions：https://github.com/zhuoju36/zhiwei-shm/discussions
 
 ## 邮件
 

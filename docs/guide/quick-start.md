@@ -16,7 +16,7 @@
 ## 1. 获取代码
 
 ```bash
-git clone https://github.com/zhiwei-shm/zhiwei.git
+git clone https://github.com/zhuoju36/zhiwei-shm.git
 cd zhiwei
 ```
 

@@ -62,7 +62,7 @@ Content-Type: application/json
 
 ### HTTP JSON（已内置）
 
-最简单：智能传感器 / 边缘网关直接 POST 到 `/data/ingest`，按上面的标准报文。详见后端 [`api/protocols.md`](https://github.com/zhiwei-shm/zhiwei/tree/main/shm-backend/docs/api/protocols.md) § `http_json`。
+最简单：智能传感器 / 边缘网关直接 POST 到 `/data/ingest`，按上面的标准报文。详见后端 [`api/protocols.md`](https://github.com/zhuoju36/zhiwei-backend/tree/main/docs/api/protocols.md) § `http_json`。
 
 ### MQTT（已内置）
 

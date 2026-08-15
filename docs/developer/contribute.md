@@ -34,7 +34,7 @@
 
 ### 后端（`shm-backend`）
 
-完整规范见 [`shm-backend/AGENTS.md`](https://github.com/zhiwei-shm/zhiwei/tree/main/shm-backend/AGENTS.md)（**最高优先级**）。要点：
+完整规范见 [`shm-backend/AGENTS.md`](https://github.com/zhuoju36/zhiwei-backend/tree/main/AGENTS.md)（**最高优先级**）。要点：
 
 - **异步铁律**：async 函数内禁止阻塞 IO；bcrypt 等 CPU 密集任务走 `loop.run_in_executor`
 - **Pydantic v2**：请求 / 响应模型放在 `schemas/`；统一响应包装在 ASGI 中间件层

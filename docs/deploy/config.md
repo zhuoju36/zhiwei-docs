@@ -119,4 +119,4 @@ METRICS_ENABLED=true
 
 - [Docker 部署](/deploy/docker)
 - [备份与恢复](/deploy/backup)
-- [后端开发环境](https://github.com/zhiwei-shm/zhiwei/tree/main/shm-backend/docs/development/setup.md)
+- [后端开发环境](https://github.com/zhuoju36/zhiwei-backend/tree/main/docs/development/setup.md)
