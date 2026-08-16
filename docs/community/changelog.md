@@ -2,6 +2,33 @@
 
 本页面跟踪前端与文档站（`shm-docs`）的变更。后端变更详见 `shm-backend` 仓库的 `CHANGELOG` 与 release notes。
 
+## 2026-08-16（v0.1.5）
+
+### 修复
+
+- [docs] drift 修复：VitePress 版本号统一为 1.6（`AGENTS.md` / `README.md`）
+- [docs] drift 修复：文档命令从 `npm` 统一为 `pnpm`（`contribute.md` / `environment.md` 文档段 / `deploy/config.md`）
+- [docs] drift 修复：移除 5 个文档 13 处 `.html` 扩展名链接（cleanUrls 下会 404）
+- [docs] drift 修复：`README.md`「CNB 默认 upstream」改为「CI 镜像仓库」，与 `editLink` 指向 GitHub 一致
+- [docs] `config.ts` 中 `gitee.svg` 注释路径更新为 `docs/public/`
+- [docs] `favicon.ico` 404：新增 `favicon.svg` 并通过 `config.ts` head 配置注入 `<link rel="icon">`
+- [docs] 公共资源统一到 `docs/public/`（删除空的 `docs/.vitepress/public/`）
+
+### 调整
+
+- [docs] 协议适配器长期方向：明确表述「中央采集 / 边缘采集」双份实现是**过渡状态**，v2 远期从后端完全解耦，由 collector（或独立适配器包）统一承载。涉及 `collector/index`、`protocol/index`、`guide/architecture`、`guide/glossary`、`plugin/index`、`community/roadmap`
+- [docs] 首页 hero 重设：新增 `home-preview.svg`（3D 监测看板预览）+ favicon.svg；新增「关键指标」3 张数字卡（10万点/秒 / 6 层拓扑 / <3s 延迟）
+- [docs] 首页 hero image 尺寸：覆盖 VitePress 默认 max-width 320px → 500px（移动端 320px）
+- [docs] 首页 hero image hover：translateY -3px + scale 1.01 + 青绿阴影（保留 VitePress 居中位移避免大幅偏移）
+- [docs] 导航栏 logo 移除（仅保留 head favicon）
+- [docs] `contact.md` 微信交流群加入二维码
+
+### 新增
+
+- [docs] `docs/public/favicon.svg`（青绿描边圆 + 「止」字品牌标）
+- [docs] `docs/public/home-preview.svg`（3D 监测看板预览，1200×800）
+- [docs] `docs/public/qr_code.png`（微信交流群二维码）
+
 ## 2026-08-15（v1.0 文档先行）
 
 ### 重写
