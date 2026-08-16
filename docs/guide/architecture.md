@@ -48,7 +48,7 @@
 └─────────────────────────────────────────────────────────────┘
 ```
 
-> v0.9 阶段 `shm-collector` 与 `shm-backend` 共进程（协议插件收在 `app/plugins/protocols/`）；**v1.0 起重新独立**，作为可选的边缘采集进程部署。后端 `app/plugins/protocols/` 仍保留，承担**中央采集**模式下的协议适配。
+> v0.9 阶段 `shm-collector` 与 `shm-backend` 共进程（协议插件收在 `app/plugins/protocols/`）；**v1.0 起重新独立**，作为可选的边缘采集进程部署。后端 `app/plugins/protocols/` 仍保留，承担**中央采集**模式下的协议适配——这是当前事实。**长期方向（v2 远期）**：协议适配器从后端完全解耦，统一由 collector（或独立适配器包）承载，后端只保留 `POST /api/v1/data/ingest` 接入端点；届时中央采集模式仅保留 HTTP JSON 这类无需适配器代码的协议，其余走 collector。
 
 ## 核心模块
 
@@ -138,10 +138,12 @@
 
 ## 扩展性
 
-- 中央采集新协议：在 `shm-backend/app/plugins/protocols/` 加一个 `<name>_adapter.py`（由 `AdapterRegistry` 自动注册）
+- 中央采集新协议（**过渡状态**，见下方说明）：在 `shm-backend/app/plugins/protocols/` 加一个 `<name>_adapter.py`（由 `AdapterRegistry` 自动注册）
 - 边缘采集新协议：在 `shm-collector` 仓内自带目录加一个 `<name>_adapter.py`，接口签名与后端插件一致；启动时由 collector 扫描加载
 - 新分析算法：在 `app/plugins/analyzers/` 加一个插件，或打包成 PyPI 包声明 entry point
 - 新可视化组件：前端基于 Vue 3 + ECharts + Three.js 自定义
+
+> **协议适配器扩展方向的长期规划**：v2 远期将把适配器从后端完全解耦——抽到独立 Python 包（或与 collector 共仓），由 collector 统一承载；后端只保留 `POST /api/v1/data/ingest` 接入。届时新增协议只需在适配器包内加一个文件，无需改后端。当前「中央采集 / 边缘采集」双份实现是过渡状态，不是终态。
 
 ## 下一步
 

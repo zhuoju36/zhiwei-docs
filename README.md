@@ -3,7 +3,7 @@
 > 止危结构健康监测（Structural Health Monitoring）平台用户与开发者文档站
 > 版本：**0.1.4** · 文档同步于 2026-08-16
 
-本站基于 VitePress 2 构建，对外提供「指南 / 用户手册 / 开发者 / 部署 / 案例 / 社区」六大板块的完整文档。版本号与 `package.json` 同步，每次内容变更通过 `chore(release): bump version to x.y.z` 提交推送。
+本站基于 VitePress 1.6 构建，对外提供「指南 / 用户手册 / 开发者 / 部署 / 案例 / 社区」六大板块的完整文档。版本号与 `package.json` 同步，每次内容变更通过 `chore(release): bump version to x.y.z` 提交推送。
 
 ## 内容导览
 
@@ -20,7 +20,7 @@
 
 | 层级 | 选型 |
 | --- | --- |
-| 站点框架 | VitePress 2.0 |
+| 站点框架 | VitePress 1.6 |
 | 包管理 | pnpm 10（`packageManager` 字段锁定） |
 | 类型 | TypeScript 5.3（仅 `config.ts`） |
 | 渲染 | Vue 3.5 + Vite（VitePress 内置） |
@@ -116,7 +116,7 @@ docker inspect --format '{{.State.Health.Status}}' zhiwei-docs
 | --- | --- |
 | GitHub | https://github.com/zhuoju36/zhiwei-shm |
 | Gitee | https://gitee.com/zhuoju36/zhiwei-shm |
-| CNB（默认 upstream） | https://cnb.cool/nedop/shm/shm-docs |
+| CNB（CI 镜像仓库） | https://cnb.cool/nedop/shm/shm-docs |
 
 ## 相关仓库
 

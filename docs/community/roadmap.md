@@ -37,13 +37,14 @@
 
 - [ ] `shm-collector` 独立仓与中央 / 边缘双采集模式（v0.9 → v1.0 文档迁移已完成）
 - [ ] 完整边缘网关进程：断网续传（本地 SQLite 队列）、健康监控、Prometheus `/metrics`
-- [ ] 协议适配器代码双份维护（v2 路线：抽共同解析到独立包）
+- [ ] 协议适配器代码双份维护（**过渡状态**；v2 远期：从后端完全解耦，统一由 collector / 独立适配器包承载，后端仅保留 `/api/v1/data/ingest` 接入端点）
 - [ ] 后端 + collector 共同 Docker 镜像发布流水线
 - [ ] Kubernetes 化部署 + Helm Chart
 - [ ] HTTPS / WSS 终止 + cert-manager 集成
 
 ## v1.0 远期
 
+- [ ] 协议适配器从后端完全解耦——抽到独立 Python 包（或与 collector 共仓），由 collector 统一承载；后端仅保留 `POST /api/v1/data/ingest` 接入端点；「中央采集」模式仅保留 HTTP JSON 这类无需适配器代码的协议
 - [ ] Collector 直写 TimescaleDB（持有 DB 用户，跳过 FastAPI，适合超大规模边缘场景）
 - [ ] 跨区域复制（Postgres logical replication + MinIO 跨区）
 - [ ] 多租户隔离

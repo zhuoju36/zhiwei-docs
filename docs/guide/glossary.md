@@ -25,7 +25,7 @@
 通道每秒钟采集的样本数，单位 Hz。挂在通道（channel）层而非传感器层。
 
 **采集器（Collector）**
-`shm-collector` 独立边缘数据采集进程。负责协议适配、本地缓存与标准化，按标准 `readings` 报文通过 `POST /api/v1/data/ingest`（`X-API-Key`）上报到 FastAPI 后端。与后端 `app/plugins/protocols/` 的协议适配器**接口签名一致但代码独立**。详见 [数据采集器](/developer/collector/)。
+`shm-collector` 独立边缘数据采集进程。负责协议适配、本地缓存与标准化，按标准 `readings` 报文通过 `POST /api/v1/data/ingest`（`X-API-Key`）上报到 FastAPI 后端。与后端 `app/plugins/protocols/` 的协议适配器**接口签名一致但代码独立**——这是 v1.0 拆分阶段的**过渡状态**，长期方向（v2 远期）是把适配器从后端完全解耦，由 collector（或独立适配器包）统一承载。详见 [数据采集器](/developer/collector/)。
 
 **采集设备（Device）**
 挂在项目下的硬件网关或采集仪，绑定一种协议（modbus_tcp / mqtt / http_json / modbus_rtu_over_tcp）。

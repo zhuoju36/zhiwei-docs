@@ -7,7 +7,7 @@
 | 类型 | 位置 | 用途 | 状态 |
 | --- | --- | --- | --- |
 | 协议插件（中央采集） | `app/plugins/protocols/` | 解析自定义设备数据格式，运行在后端进程内 | 已实现（HTTP JSON / MQTT / Modbus TCP / Modbus RTU over TCP） |
-| 协议插件（边缘采集） | `shm-collector/shm_collector/plugins/protocols/` | 同上，运行在独立 collector 进程内；**接口签名一致但代码独立** | 详见 [数据采集器](/developer/collector/) |
+| 协议插件（边缘采集） | `shm-collector/shm_collector/plugins/protocols/` | 同上，运行在独立 collector 进程内；**接口签名一致但代码独立**（**过渡状态**；长期方向：从后端完全解耦，统一由 collector / 独立适配器包承载） | 详见 [数据采集器](/developer/collector/) |
 | 分析插件 | `app/plugins/analyzers/` | 实现自定义特征值或分析算法（FFT / statistics 等） | 已实现（FFT / statistics） |
 | 可视化组件 | 前端 `shm-frontend/src/components/` | 在看板中添加自定义图表 | 走前端 Vue 组件而非后端插件 |
 

@@ -1,0 +1,279 @@
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="cardBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#3b82f6" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.8"/>
+    </linearGradient>
+    <linearGradient id="gridGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="scanLine" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#06b6d4" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="dotGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#22d3ee" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="800" fill="url(#bgGrad)"/>
+
+  <pattern id="bgDots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+    <circle cx="2" cy="2" r="1" fill="#334155" opacity="0.3"/>
+  </pattern>
+  <rect width="1200" height="800" fill="url(#bgDots)"/>
+
+  <!-- 顶部标题区 -->
+  <rect x="0" y="0" width="1200" height="50" fill="#0f172a" opacity="0.8"/>
+  <rect x="0" y="48" width="1200" height="2" fill="#06b6d4" opacity="0.5"/>
+
+  <g transform="translate(600, 18)" fill="#e2e8f0" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="600" text-anchor="middle">
+    <text x="0" y="12">止危 — 开源结构健康监测平台</text>
+  </g>
+
+  <g transform="translate(1080, 18)" fill="#94a3b8" font-family="monospace" font-size="12">
+    <text x="0" y="12">● 实时在线</text>
+  </g>
+
+  <!-- 顶部数据卡片区域 -->
+  <g transform="translate(20, 70)">
+    <!-- 卡片1: 活跃告警 -->
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" width="270" height="100" rx="6" fill="#1e293b" stroke="url(#cardBorder)" stroke-width="1" opacity="0.9"/>
+      <text x="15" y="24" fill="#94a3b8" font-size="12" font-family="system-ui, -apple-system, sans-serif">活跃告警</text>
+      <text x="15" y="68" fill="#f87171" font-size="36" font-family="system-ui, -apple-system, sans-serif" font-weight="700" filter="url(#glow)">1</text>
+      <text x="50" y="68" fill="#f87171" font-size="16" font-family="system-ui, -apple-system, sans-serif">起</text>
+      <rect x="15" y="85" width="40" height="2" rx="1" fill="#f87171" opacity="0.6"/>
+    </g>
+
+    <!-- 卡片2: 近24h告警 -->
+    <g transform="translate(290, 0)">
+      <rect x="0" y="0" width="270" height="100" rx="6" fill="#1e293b" stroke="url(#cardBorder)" stroke-width="1" opacity="0.9"/>
+      <text x="15" y="24" fill="#94a3b8" font-size="12" font-family="system-ui, -apple-system, sans-serif">近 24h 告警</text>
+      <text x="15" y="68" fill="#fbbf24" font-size="36" font-family="system-ui, -apple-system, sans-serif" font-weight="700" filter="url(#glow)">3</text>
+      <text x="50" y="68" fill="#fbbf24" font-size="16" font-family="system-ui, -apple-system, sans-serif">次</text>
+      <rect x="15" y="85" width="40" height="2" rx="1" fill="#fbbf24" opacity="0.6"/>
+    </g>
+
+    <!-- 卡片3: 告警分布 -->
+    <g transform="translate(580, 0)">
+      <rect x="0" y="0" width="270" height="100" rx="6" fill="#1e293b" stroke="url(#cardBorder)" stroke-width="1" opacity="0.9"/>
+      <text x="15" y="24" fill="#94a3b8" font-size="12" font-family="system-ui, -apple-system, sans-serif">告警分布</text>
+      <g transform="translate(15, 42)">
+        <rect x="0" y="0" width="8" height="8" rx="2" fill="#fbbf24"/>
+        <text x="15" y="7" fill="#cbd5e1" font-size="10" font-family="system-ui, -apple-system, sans-serif">警告</text>
+        <rect x="55" y="2" width="120" height="4" rx="2" fill="#334155"/>
+        <rect x="55" y="2" width="60" height="4" rx="2" fill="#fbbf24"/>
+        <text x="185" y="7" fill="#94a3b8" font-size="10" font-family="system-ui, -apple-system, sans-serif">2</text>
+      </g>
+      <g transform="translate(15, 60)">
+        <rect x="0" y="0" width="8" height="8" rx="2" fill="#f87171"/>
+        <text x="15" y="7" fill="#cbd5e1" font-size="10" font-family="system-ui, -apple-system, sans-serif">危险</text>
+        <rect x="55" y="2" width="120" height="4" rx="2" fill="#334155"/>
+        <rect x="55" y="2" width="30" height="4" rx="2" fill="#f87171"/>
+        <text x="185" y="7" fill="#94a3b8" font-size="10" font-family="system-ui, -apple-system, sans-serif">1</text>
+      </g>
+      <g transform="translate(15, 78)">
+        <rect x="0" y="0" width="8" height="8" rx="2" fill="#22d3ee"/>
+        <text x="15" y="7" fill="#cbd5e1" font-size="10" font-family="system-ui, -apple-system, sans-serif">信息</text>
+        <rect x="55" y="2" width="120" height="4" rx="2" fill="#334155"/>
+        <rect x="55" y="2" width="0" height="4" rx="2" fill="#22d3ee"/>
+        <text x="185" y="7" fill="#94a3b8" font-size="10" font-family="system-ui, -apple-system, sans-serif">0</text>
+      </g>
+    </g>
+
+    <!-- 卡片4: 最新告警 -->
+    <g transform="translate(870, 0)">
+      <rect x="0" y="0" width="290" height="100" rx="6" fill="#1e293b" stroke="url(#cardBorder)" stroke-width="1" opacity="0.9"/>
+      <text x="15" y="24" fill="#94a3b8" font-size="12" font-family="system-ui, -apple-system, sans-serif">最新告警</text>
+      <text x="120" y="62" fill="#f87171" font-size="14" font-family="system-ui, -apple-system, sans-serif">结构位移异常</text>
+      <circle cx="100" cy="58" r="3" fill="#f87171">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+  </g>
+
+  <!-- 主内容区 -->
+  <g transform="translate(20, 190)">
+    <!-- 左侧传感器面板 -->
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" width="200" height="560" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1" opacity="0.9"/>
+      <text x="15" y="25" fill="#94a3b8" font-size="12" font-family="system-ui, -apple-system, sans-serif">项目</text>
+      <rect x="15" y="35" width="170" height="32" rx="4" fill="#0f172a" stroke="#475569" stroke-width="1"/>
+      <text x="25" y="55" fill="#e2e8f0" font-size="12" font-family="system-ui, -apple-system, sans-serif">示例项目</text>
+      <path d="M165 48 L172 55 L165 62" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+
+      <text x="15" y="95" fill="#94a3b8" font-size="12" font-family="system-ui, -apple-system, sans-serif">传感器</text>
+      <circle cx="175" cy="90" r="10" fill="#0f172a" stroke="#22d3ee" stroke-width="1"/>
+      <text x="170" y="94" fill="#22d3ee" font-size="10" font-family="system-ui, -apple-system, sans-serif">12</text>
+
+      <rect x="15" y="105" width="170" height="28" rx="4" fill="#0f172a" stroke="#475569" stroke-width="1"/>
+      <text x="25" y="123" fill="#64748b" font-size="11" font-family="system-ui, -apple-system, sans-serif">搜索编码 / 名称</text>
+
+      <text x="100" y="280" fill="#475569" font-size="12" font-family="system-ui, -apple-system, sans-serif" text-anchor="middle">该项目暂无传感器</text>
+
+      <line x1="15" y1="340" x2="185" y2="340" stroke="#334155" stroke-width="1" stroke-dasharray="4 4"/>
+      <line x1="15" y1="370" x2="185" y2="370" stroke="#334155" stroke-width="1" stroke-dasharray="4 4"/>
+      <line x1="15" y1="400" x2="185" y2="400" stroke="#334155" stroke-width="1" stroke-dasharray="4 4"/>
+    </g>
+
+    <!-- 中间 3D 数字孪生区域 -->
+    <g transform="translate(220, 0)">
+      <rect x="0" y="0" width="560" height="560" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1" opacity="0.9"/>
+      <text x="15" y="25" fill="#e2e8f0" font-size="14" font-family="system-ui, -apple-system, sans-serif" font-weight="600">三维数字孪生</text>
+      <text x="380" y="25" fill="#64748b" font-size="10" font-family="system-ui, -apple-system, sans-serif">在线实时数据</text>
+
+      <!-- 3D 网格地面 -->
+      <g transform="translate(280, 280)">
+        <g opacity="0.4">
+          <line x1="-220" y1="100" x2="220" y2="100" stroke="#06b6d4" stroke-width="0.5"/>
+          <line x1="-220" y1="50" x2="220" y2="50" stroke="#06b6d4" stroke-width="0.5"/>
+          <line x1="-220" y1="0" x2="220" y2="0" stroke="#06b6d4" stroke-width="0.5"/>
+          <line x1="-220" y1="-50" x2="220" y2="-50" stroke="#06b6d4" stroke-width="0.5"/>
+          <line x1="-220" y1="-100" x2="220" y2="-100" stroke="#06b6d4" stroke-width="0.5"/>
+          <line x1="-220" y1="100" x2="-110" y2="-120" stroke="#06b6d4" stroke-width="0.5"/>
+          <line x1="-110" y1="100" x2="-55" y2="-120" stroke="#06b6d4" stroke-width="0.5"/>
+          <line x1="0" y1="100" x2="0" y2="-120" stroke="#06b6d4" stroke-width="0.5"/>
+          <line x1="110" y1="100" x2="55" y2="-120" stroke="#06b6d4" stroke-width="0.5"/>
+          <line x1="220" y1="100" x2="110" y2="-120" stroke="#06b6d4" stroke-width="0.5"/>
+        </g>
+
+        <!-- 建筑结构抽象示意 -->
+        <g transform="translate(0, -20)">
+          <rect x="-60" y="0" width="120" height="8" rx="2" fill="none" stroke="#22d3ee" stroke-width="1.5" opacity="0.8"/>
+          <rect x="-50" y="-80" width="6" height="80" rx="1" fill="none" stroke="#22d3ee" stroke-width="1" opacity="0.6"/>
+          <rect x="-5" y="-100" width="6" height="100" rx="1" fill="none" stroke="#22d3ee" stroke-width="1" opacity="0.6"/>
+          <rect x="40" y="-80" width="6" height="80" rx="1" fill="none" stroke="#22d3ee" stroke-width="1" opacity="0.6"/>
+          <line x1="-50" y1="-60" x2="45" y2="-60" stroke="#06b6d4" stroke-width="1" opacity="0.5"/>
+          <line x1="-50" y1="-30" x2="45" y2="-30" stroke="#06b6d4" stroke-width="1" opacity="0.5"/>
+          <rect x="-40" y="-110" width="80" height="10" rx="2" fill="none" stroke="#22d3ee" stroke-width="1" opacity="0.7"/>
+
+          <circle cx="-47" cy="-80" r="3" fill="#22d3ee" filter="url(#glow)">
+            <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="-2" cy="-100" r="3" fill="#22d3ee" filter="url(#glow)">
+            <animate attributeName="r" values="3;5;3" dur="2.5s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="1;0.5;1" dur="2.5s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="43" cy="-80" r="3" fill="#22d3ee" filter="url(#glow)">
+            <animate attributeName="r" values="3;5;3" dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="1;0.5;1" dur="3s" repeatCount="indefinite"/>
+          </circle>
+        </g>
+
+        <rect x="-220" y="-120" width="440" height="4" fill="url(#scanLine)" opacity="0.6">
+          <animateTransform attributeName="transform" type="translate" values="0,-120; 0,220; 0,-120" dur="4s" repeatCount="indefinite"/>
+        </rect>
+      </g>
+
+      <!-- 底部实时曲线区 - 三条波形曲线 -->
+      <g transform="translate(0, 380)">
+        <rect x="0" y="0" width="560" height="180" fill="#0f172a" opacity="0.5"/>
+        <text x="15" y="25" fill="#e2e8f0" font-size="12" font-family="system-ui, -apple-system, sans-serif" font-weight="600">实时曲线</text>
+        <text x="80" y="25" fill="#64748b" font-size="10" font-family="system-ui, -apple-system, sans-serif">在右侧点击通道查看曲线</text>
+
+        <!-- 波形曲线区域 -->
+        <g transform="translate(30, 50)">
+          <!-- 曲线1: 青色 -->
+          <path d="M0 40 Q20 15, 40 40 T80 40 T120 25 T160 45 T200 30 T240 40 T280 20 T320 40 T360 30 T400 40 T440 25 T480 40 T500 35" 
+                fill="none" stroke="#22d3ee" stroke-width="1.5" opacity="0.9">
+            <animate attributeName="d" 
+                     values="M0 40 Q20 15, 40 40 T80 40 T120 25 T160 45 T200 30 T240 40 T280 20 T320 40 T360 30 T400 40 T440 25 T480 40 T500 35;
+                             M0 30 Q20 45, 40 25 T80 40 T120 45 T160 25 T200 35 T240 20 T280 40 T320 25 T360 45 T400 30 T440 40 T480 25 T500 40;
+                             M0 40 Q20 15, 40 40 T80 40 T120 25 T160 45 T200 30 T240 40 T280 20 T320 40 T360 30 T400 40 T440 25 T480 40 T500 35"
+                     dur="3s" repeatCount="indefinite"/>
+          </path>
+
+          <!-- 曲线2: 黄色 -->
+          <path d="M0 60 Q25 40, 50 65 T100 50 T150 65 T200 45 T250 60 T300 50 T350 65 T400 50 T450 60 T500 50" 
+                fill="none" stroke="#fbbf24" stroke-width="1.5" opacity="0.8">
+            <animate attributeName="d" 
+                     values="M0 60 Q25 40, 50 65 T100 50 T150 65 T200 45 T250 60 T300 50 T350 65 T400 50 T450 60 T500 50;
+                             M0 50 Q25 65, 50 45 T100 60 T150 50 T200 65 T250 45 T300 60 T350 50 T400 65 T450 50 T500 60;
+                             M0 60 Q25 40, 50 65 T100 50 T150 65 T200 45 T250 60 T300 50 T350 65 T400 50 T450 60 T500 50"
+                     dur="4s" repeatCount="indefinite"/>
+          </path>
+
+          <!-- 曲线3: 红色 -->
+          <path d="M0 80 Q30 60, 60 85 T120 65 T180 85 T240 65 T300 80 T360 65 T420 85 T480 65 T500 80" 
+                fill="none" stroke="#f87171" stroke-width="1.5" opacity="0.8">
+            <animate attributeName="d" 
+                     values="M0 80 Q30 60, 60 85 T120 65 T180 85 T240 65 T300 80 T360 65 T420 85 T480 65 T500 80;
+                             M0 65 Q30 85, 60 60 T120 80 T180 65 T240 85 T300 65 T360 80 T420 65 T480 85 T500 65;
+                             M0 80 Q30 60, 60 85 T120 65 T180 85 T240 65 T300 80 T360 65 T420 85 T480 65 T500 80"
+                     dur="5s" repeatCount="indefinite"/>
+          </path>
+
+          <!-- Y轴刻度线 -->
+          <line x1="0" y1="0" x2="0" y2="110" stroke="#334155" stroke-width="0.5" opacity="0.5"/>
+          <line x1="0" y1="25" x2="500" y2="25" stroke="#334155" stroke-width="0.3" stroke-dasharray="2 4" opacity="0.3"/>
+          <line x1="0" y1="55" x2="500" y2="55" stroke="#334155" stroke-width="0.3" stroke-dasharray="2 4" opacity="0.3"/>
+          <line x1="0" y1="85" x2="500" y2="85" stroke="#334155" stroke-width="0.3" stroke-dasharray="2 4" opacity="0.3"/>
+
+          <!-- X轴 -->
+          <line x1="0" y1="110" x2="500" y2="110" stroke="#334155" stroke-width="0.5" opacity="0.5"/>
+        </g>
+      </g>
+    </g>
+
+    <!-- 右侧测点实时通道 -->
+    <g transform="translate(800, 0)">
+      <rect x="0" y="0" width="360" height="560" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1" opacity="0.9"/>
+      <text x="15" y="25" fill="#e2e8f0" font-size="14" font-family="system-ui, -apple-system, sans-serif" font-weight="600">测点实时通道</text>
+      <text x="120" y="25" fill="#64748b" font-size="10" font-family="system-ui, -apple-system, sans-serif">(0)</text>
+
+      <text x="15" y="50" fill="#64748b" font-size="10" font-family="system-ui, -apple-system, sans-serif">质量映射: good 良好 / uncertain 不确定 / bad 异常</text>
+
+      <line x1="15" y1="60" x2="345" y2="60" stroke="#334155" stroke-width="1"/>
+
+      <text x="180" y="280" fill="#475569" font-size="12" font-family="system-ui, -apple-system, sans-serif" text-anchor="middle">暂无通道</text>
+
+      <g opacity="0.2">
+        <rect x="15" y="80" width="330" height="28" rx="4" fill="#334155"/>
+        <rect x="15" y="118" width="330" height="28" rx="4" fill="#334155"/>
+        <rect x="15" y="156" width="330" height="28" rx="4" fill="#334155"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- 底部信息栏 -->
+  <rect x="0" y="770" width="1200" height="30" fill="#0f172a" opacity="0.9"/>
+
+  <g opacity="0.6">
+    <circle cx="100" cy="350" r="2" fill="#22d3ee">
+      <animate attributeName="cy" values="350;220;350" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;1;0" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="1100" cy="250" r="2" fill="#22d3ee">
+      <animate attributeName="cy" values="250;450;250" dur="4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;1;0" dur="4s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="600" cy="200" r="1.5" fill="#06b6d4">
+      <animate attributeName="cy" values="200;650;200" dur="5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0.8;0" dur="5s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <g opacity="0.4">
+    <path d="M20 760 L20 740 L40 740" fill="none" stroke="#06b6d4" stroke-width="1"/>
+    <path d="M1180 760 L1180 740 L1160 740" fill="none" stroke="#06b6d4" stroke-width="1"/>
+    <path d="M20 70 L20 90 L40 90" fill="none" stroke="#06b6d4" stroke-width="1"/>
+    <path d="M1180 70 L1180 90 L1160 90" fill="none" stroke="#06b6d4" stroke-width="1"/>
+  </g>
+</svg>

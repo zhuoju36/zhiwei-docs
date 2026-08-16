@@ -103,10 +103,10 @@ celery -A app.tasks.celery_app:celery_app worker \
 
 ## 相关链接
 
-- [开发环境](/developer/environment.html)
-- [后端架构](/developer/architecture-backend.html)
-- [代码规范](/developer/coding-standards.html)
-- [测试](/developer/testing.html)
+- [开发环境](/developer/environment)
+- [后端架构](/developer/architecture-backend)
+- [代码规范](/developer/coding-standards)
+- [测试](/developer/testing)
 - [数据模型](/developer/database/)
 - [接口文档](/developer/api/)
 - [接入协议](/developer/protocol/)
@@ -114,7 +114,7 @@ celery -A app.tasks.celery_app:celery_app worker \
 
 ## 模块技术说明
 
-逐模块说明 `app/` 下各子包的关键类、职责与调用关系。本节与 [后端架构](/developer/architecture-backend.html) 互为补充——架构文档讲「为什么这样切」，本节讲「每个文件里实际是什么」。
+逐模块说明 `app/` 下各子包的关键类、职责与调用关系。本节与 [后端架构](/developer/architecture-backend) 互为补充——架构文档讲「为什么这样切」，本节讲「每个文件里实际是什么」。
 
 ### 入口与生命周期
 
@@ -143,7 +143,7 @@ Pydantic BaseSettings，从 `.env` 加载（`env_file=".env"`）。`asyncpg_dsn`
 
 #### `app/database.py`
 
-`engine = create_async_engine(...)`：`pool_size=20, max_overflow=30, pool_pre_ping=True, pool_recycle=3600`（[代码规范 § 异步铁律](/developer/coding-standards.html#异步铁律)）。
+`engine = create_async_engine(...)`：`pool_size=20, max_overflow=30, pool_pre_ping=True, pool_recycle=3600`（[代码规范 § 异步铁律](/developer/coding-standards#异步铁律)）。
 
 `AsyncSessionLocal = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)`。
 
@@ -163,7 +163,7 @@ Pydantic BaseSettings，从 `.env` 加载（`env_file=".env"`）。`asyncpg_dsn`
 - `biz_exception_handler` / `validation_exception_handler` / `unhandled_exception_handler`
 - `create_router(**kwargs)` — 业务路由器工厂（仅做 `APIRouter(**kwargs)`；包装在中间件层完成）
 
-设计动机见 [后端架构 § 关键技术决策](/developer/architecture-backend.html#关键技术决策与权衡) 中「统一响应中间件的演化」。
+设计动机见 [后端架构 § 关键技术决策](/developer/architecture-backend#关键技术决策与权衡) 中「统一响应中间件的演化」。
 
 #### `app/dependencies.py`
 

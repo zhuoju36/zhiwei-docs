@@ -98,8 +98,8 @@ npm run dev
 
 ```bash
 cd ../shm-docs
-npm install
-npm run docs:dev
+pnpm install
+pnpm docs:dev
 ```
 
 文档站默认运行在 `http://localhost:5174`。

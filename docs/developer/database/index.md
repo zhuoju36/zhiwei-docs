@@ -288,7 +288,7 @@ async def batch_ingest(readings: list[ReadingIn]) -> int:
 ## 相关链接
 
 - [后端模块](/developer/backend/)
-- [后端架构](/developer/architecture-backend.html)
+- [后端架构](/developer/architecture-backend)
 - [接入协议](/developer/protocol/)
-- [测试](/developer/testing.html)
+- [测试](/developer/testing)
 - [接口文档](/developer/api/)

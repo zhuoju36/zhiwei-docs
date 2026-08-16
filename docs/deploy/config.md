@@ -87,9 +87,9 @@ METRICS_ENABLED=true
 
 | 命令 | 说明 |
 | --- | --- |
-| `npm run docs:dev` | 本地开发（端口 5174） |
-| `npm run docs:build` | 生产构建（产出 `docs/.vitepress/dist/`） |
-| `npm run docs:preview` | 本地预览生产产物（端口 5174） |
+| `pnpm docs:dev` | 本地开发（端口 5174） |
+| `pnpm docs:build` | 生产构建（产出 `docs/.vitepress/dist/`） |
+| `pnpm docs:preview` | 本地预览生产产物（端口 5174） |
 
 经 `shm-gateway` 网关以 `/docs/` 子路径挂载；`vitepress.config.ts` 中 `base: '/docs/'`。
 

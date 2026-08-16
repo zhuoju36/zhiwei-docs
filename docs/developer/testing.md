@@ -17,7 +17,7 @@
 当前覆盖：
 - 单元：`tests/test_security.py`（JWT + bcrypt）、`tests/test_protocols.py`（registry + http_json）
 - 集成：`tests/test_auth_api.py`、`tests/test_projects_api.py`、`tests/test_data_ingest.py`（含 1 万条写入 < 2s 性能断言）
-- E2E：见 [开发环境 § 首次克隆后](/developer/environment.html#首次克隆后) 手工冒烟
+- E2E：见 [开发环境 § 首次克隆后](/developer/environment#首次克隆后) 手工冒烟
 
 ## 2. pytest 配置（`pyproject.toml`）
 
@@ -100,7 +100,7 @@ async def login_headers(client, username, password) -> dict[str, str]:
 
 ## 相关文档
 
-- 后端代码规范：[代码规范](/developer/coding-standards.html)
+- 后端代码规范：[代码规范](/developer/coding-standards)
 - 后端模块：[后端模块](/developer/backend/)
 - 数据库与迁移：[数据模型](/developer/database/)
-- 模拟与冒烟（无硬件）：[模拟与冒烟](/developer/simulation.html)
+- 模拟与冒烟（无硬件）：[模拟与冒烟](/developer/simulation)

@@ -182,6 +182,6 @@ plugins: add http_json adapter example
 - 后端 AGENTS.md（仓库内，最高优先级）
 - 后端模块逐包说明：[后端模块](/developer/backend/)
 - 数据库与迁移：[数据模型](/developer/database/)
-- 测试策略：[测试](/developer/testing.html)
+- 测试策略：[测试](/developer/testing)
 - 协议层契约：[接入协议](/developer/protocol/)
 - 插件契约：[插件开发](/developer/plugin/)

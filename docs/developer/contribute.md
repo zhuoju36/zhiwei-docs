@@ -52,7 +52,7 @@
 ### 文档（`shm-docs`，本仓库）
 
 - VitePress 1.6 语法（frontmatter + Markdown）
-- 修改后本地运行 `npm run docs:dev` 预览（端口 5174）
+- 修改后本地运行 `pnpm docs:dev` 预览（端口 5174）
 - 新增 / 重命名 / 删除页面后同步更新 `.vitepress/config.ts` 的侧边栏
 
 ## 测试要求
@@ -61,7 +61,7 @@
 
 - 后端：pytest + pytest-asyncio；fixture 见 `tests/conftest.py`
 - 前端：组件测试与 E2E（vitest / playwright，规划中）
-- 文档：本地构建 `npm run docs:build` 验证无 VitePress 报错
+- 文档：本地构建 `pnpm docs:build` 验证无 VitePress 报错
 
 ## 文档贡献
 
@@ -69,9 +69,9 @@
 
 ```bash
 cd shm-docs
-npm install
-npm run docs:dev        # 本地预览（http://localhost:5174）
-npm run docs:build      # 生产构建（产出 docs/.vitepress/dist/）
+pnpm install
+pnpm docs:dev           # 本地预览（http://localhost:5174）
+pnpm docs:build         # 生产构建（产出 docs/.vitepress/dist/）
 ```
 
 修改 `docs/.vitepress/config.ts` 的导航与侧边栏时请保持与现有风格一致（侧边栏按用户手册 / 开发者 / 部署分组）。

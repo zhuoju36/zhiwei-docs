@@ -11,8 +11,11 @@ export default defineConfig({
   cleanUrls: true,
   metaChunk: true,
 
+  head: [
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }]
+  ],
+
   themeConfig: {
-    logo: '/logo.svg',
     nav: [
       { text: '指南', link: '/guide/what-is-zhiwei' },
       { text: '用户手册', link: '/user/project/' },
@@ -152,7 +155,7 @@ export default defineConfig({
       { icon: 'github', link: 'https://github.com/zhuoju36/zhiwei-shm' },
       {
         icon: {
-          // 引用 docs/.vitepress/public/gitee.svg（静态资源，非 inline）
+          // 引用 docs/public/gitee.svg（静态资源，非 inline）
           svg: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 90 90" style="width: 20px; height: 20px"><image href="./gitee.svg" xlink:href="./gitee.svg"/></svg>'
         },
         link: 'https://gitee.com/zhuoju36/zhiwei-shm',

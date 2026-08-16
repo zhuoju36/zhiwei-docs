@@ -2,7 +2,7 @@
 
 `shm-collector` 是止危的**独立数据采集进程**，与 FastAPI 主进程解耦。负责协议适配、本地缓存与标准化，把现场设备数据按统一 `readings` 报文通过 `POST /api/v1/data/ingest`（`X-API-Key`）上报到后端。
 
-> v0.9 期间 collector 与后端共进程（协议插件收在 `app/plugins/protocols/`）；**v1.0 起重新独立**，作为可选的边缘采集进程部署。
+> v0.9 期间 collector 与后端共进程（协议插件收在 `app/plugins/protocols/`）；**v1.0 起重新独立**，作为可选的边缘采集进程部署。**长期方向（v2 远期）**：把协议适配器从后端完全解耦出去，统一由 collector（或独立适配器包）承载，后端只保留 `POST /api/v1/data/ingest` 接入端点——届时「中央采集」模式要么经 collector 转发实现，要么仅保留 HTTP JSON 这类无需适配器代码的协议。
 
 ## 何时使用
 
@@ -215,9 +215,9 @@ class ProtocolAdapter(ABC):
 | 设备配置 | `devices.config` 存 DB | `config.toml` 文件 |
 | 前端协议表单 | `GET /api/v1/protocols` 提供 schema | 独立 schema 文件（不走 `/api/v1/protocols`） |
 | 升级影响 | 需重启后端 | 仅需重启 collector |
-| 代码复用 | — | 接口签名一致，但代码双份（独立维护） |
+| 代码复用 | — | 接口签名一致，但代码双份（**过渡状态**；长期方向是从后端解耦，由 collector 统一承载） |
 
-> 同一协议在两边各实现一次是设计上的取舍：换来 collector 与后端零耦合、可独立部署、可独立选语言（未来 collector 不必是 Python）。
+> 当前同一协议在两边各实现一次是**过渡状态**，不是终态设计。长期方向是把协议适配器从后端完全解耦——抽到独立 Python 包（或与 collector 共仓），由 collector 统一承载；后端只保留 `POST /api/v1/data/ingest` 接入。这样换来的是「后端零协议代码」+「collector 单一权威实现」，而不是「两边各一份」。
 
 ## 部署
 
@@ -272,7 +272,7 @@ Kubernetes：建议作为 **DaemonSet** 部署到边缘节点组（每个物理�
 
 - 暂不直接写数据库——所有 readings 都经 `POST /api/v1/data/ingest` 写入；「直写 TimescaleDB」是 v2.0 路线图
 - 设备清单在 collector 侧，重启 backend 不会反向同步 collector 配置
-- 协议适配器代码与 `shm-backend` 平行维护（v2 路线：抽共同解析到独立包）
+- 协议适配器代码与 `shm-backend` 平行维护（**过渡状态**；v2 远期：从后端完全解耦，统一由 collector / 独立适配器包承载，后端仅保留 `/api/v1/data/ingest` 接入端点）
 
 ## 下一步
 
