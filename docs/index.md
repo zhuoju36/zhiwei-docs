@@ -104,10 +104,13 @@ features:
 }
 
 /* 放大 hero image：覆盖 VitePress 默认的 max-width:192/256/320px */
+/* 用 aspect-ratio 锁死比例，避免 max-width + max-height 双约束在 Chrome/Safari 下表现不一致 */
 .VPHero .image-src,
 .VPHomeHero .image-src {
   max-width: 500px !important;
-  max-height: 333px !important;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
   transition: transform .25s ease, filter .25s ease, box-shadow .25s ease;
   will-change: transform, filter;
 }
@@ -123,7 +126,6 @@ features:
   .VPHero .image-src,
   .VPHomeHero .image-src {
     max-width: 320px !important;
-    max-height: 220px !important;
   }
   .VPHero .image-src:hover,
   .VPHomeHero .image-src:hover {
@@ -135,24 +137,35 @@ features:
 ## 快速预览
 
 ```bash
-# 1. 克隆仓库
-git clone https://github.com/zhuoju36/zhiwei-shm.git
-cd zhiwei
+# 1. 克隆编排仓库（git submodule 包含 backend / frontend / docs / mock）
+git clone --recursive https://github.com/zhuoju36/zhiwei-shm.git
+cd zhiwei-shm
+git submodule update --init --recursive
 
-# 2. 启动后端基础设施（PostgreSQL/TimescaleDB、Redis、MinIO）
-cd shm-backend
-docker compose up -d postgres redis minio
+# 2. 准备环境变量（首次）
+cp .env.example .env
+# 生产环境务必替换 SECRET_KEY / EDGE_API_KEY / MINIO_*
 
-# 3. 初始化数据库与首个管理员
-.venv/bin/alembic upgrade head
-.venv/bin/python -m scripts.init_db
-.venv/bin/python -m scripts.init_admin
+# 3. 一键拉起全栈（远端预构建镜像，entrypoint 自动迁移 + init admin）
+docker compose up -d --build
 
-# 4. 启动 API
-.venv/bin/python -m uvicorn app.main:app --reload
+# （可选）附加 profile
+docker compose --profile dev up -d   # 加上 shm-mock（模拟数据源，向 /api/v1/ingest 推读数）
 ```
 
-打开 `http://localhost:8000/docs` 查看 Swagger UI；首次访问 `http://localhost:8000/setup` 创建第一个 admin 后即可登录。
+启动后通过唯一的 nginx 网关访问：
+
+| 路径 | 入口 |
+| --- | --- |
+| `/` | 文档站（本仓库，VitePress 静态站） |
+| `/app/` | 数据大屏前端（Vue 3 + Three.js） |
+| `/api/docs/` | Swagger UI（后端 OpenAPI） |
+| `/api/redoc/` | ReDoc |
+| `/api/v1/data/ingest` | 边缘网关 / 数据采集器上报入口（`X-API-Key`） |
+| `/ws/data` | WebSocket 实时推送（`?token=<JWT>`） |
+| `:9001` | MinIO 控制台（仅开发暴露，生产移除） |
+
+首次启动时 `shm-api` 容器会自动跑 Alembic 迁移、`scripts.init_db`（hypertable + 保留策略），并在 `.env` 提供 `ADMIN_USERNAME` / `ADMIN_PASSWORD` 时自动创建首个管理员。手动创建管理员也可走 `http://localhost/setup`（仅 `users` 表为空时开放）。
 
 ## 六层数据拓扑
 
