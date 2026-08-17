@@ -2,6 +2,19 @@
 
 本页面跟踪前端与文档站（`shm-docs`）的变更。后端变更详见 `shm-backend` 仓库的 `CHANGELOG` 与 release notes。
 
+## 2026-08-17（v0.1.8）
+
+### 新增
+
+- [docs] `developer/contribute.md`：参与方式下新增三个按身份划分的贡献入口——高校 / 科研机构、设备厂商、监测系统集成商
+- [docs] `guide/what-is-zhiwei.md`：新增「Zhiwei，不止止危」一节，扩展「知微 → 止危 → 治未」三阶段命名内涵（感知层 / 响应层 / 治理层）
+
+### 调整
+
+- [docs] `AGENTS.md`：VitePress 技术栈版本由 1.6 更新为 2.0
+- [docs] `index.md`：适用场景重排，建筑监测置顶并补「应变」监测项
+- [docs] `README.md`：版本号与文档同步日期同步到 v0.1.8 / 2026-08-17
+
 ## 2026-08-16（v0.1.5）
 
 ### 修复

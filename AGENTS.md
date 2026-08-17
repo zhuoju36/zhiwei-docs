@@ -1,7 +1,7 @@
 # AGENTS.md - 前端开发规范与指南
 
 > **项目**：止危结构健康监测（SHM）平台用户文档
-> **技术栈**：VitePress 1.6 + TypeScript 5.3  
+> **技术栈**：VitePress 2.0 + TypeScript 5.3  
 > 全局架构详见 ../架构说明书.md
 > 后端文档见 ../shm-backend/docs
 > 前端文档见 ../shm-frontend/docs

@@ -1,7 +1,7 @@
 # 止危——开源的结构健康监测平台文档
 
 > 止危结构健康监测（Structural Health Monitoring）平台用户与开发者文档站
-> 版本：**0.1.6** · 文档同步于 2026-08-16
+> 版本：**0.1.8** · 文档同步于 2026-08-17
 
 本站基于 VitePress 1.6 构建，对外提供「指南 / 用户手册 / 开发者 / 部署 / 案例 / 社区」六大板块的完整文档。版本号与 `package.json` 同步，每次内容变更通过 `chore(release): bump version to x.y.z` 提交推送。
 
@@ -84,8 +84,8 @@ shm-docs/
 ## 镜像构建与发布
 
 ```bash
-docker build -t zhiwei-docs:0.1.6 .
-docker run -d --name zhiwei-docs -p 8080:80 zhiwei-docs:0.1.6
+docker build -t zhiwei-docs:0.1.8 .
+docker run -d --name zhiwei-docs -p 8080:80 zhiwei-docs:0.1.8
 ```
 
 健康检查：
