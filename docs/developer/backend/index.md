@@ -377,6 +377,7 @@ OAuth2 password flow 使用 `OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login",
 
 - `queue="reports"`，**不自动重试**（格式问题重试无意义；意外异常也回写 failed 避免悬挂）
 - 流程：下载 MinIO 源文件 → `scripts.model_convert.convert_bytes` → 上传 GLB → `mark_success`
+- 依赖：`trimesh` + `Pillow`（v0.9.5 起，带纹理 OBJ 导出 GLB 需 Pillow 处理材质图像）；**需启动 reports 队列 worker**，否则上传后任务永远 `pending`（本机开发：`celery -A app.tasks.celery_app worker --queues=reports`）
 
 ### WebSocket（`app/ws/`）
 

@@ -25,11 +25,18 @@
   "data": {
     "access_token": "eyJhbGciOiJIUzI1NiIs...",
     "refresh_token": "eyJhbGciOiJIUzI1NiIs...",
-    "token_type": "bearer"
+    "token_type": "bearer",
+    "user_id": 1,
+    "username": "admin",
+    "email": "admin@example.com",
+    "role": "admin",
+    "is_active": true
   },
   "timestamp": "2026-08-13T12:34:56.789+00:00"
 }
 ```
+
+> v0.9.5：登录/刷新响应携带 `user_id / username / email / role / is_active`，前端无需解析 JWT 即可获取角色。
 
 ### 错误
 
