@@ -193,6 +193,46 @@ Content-Disposition: attachment; filename="<插件 artifact_name>"
 
 ---
 
+## POST /api/v1/analysis/jobs/&#123;job_id&#125;/cancel
+
+取消 `pending` 或 `running` 状态的分析任务。running 状态会通过 Celery `revoke(terminate=True)` 终止 worker 中的任务；插件完成后协作守卫保证不会把结果覆盖回写为 `success`。
+
+### 请求
+
+无需 body。
+
+### 响应 200
+
+```json
+{
+  "code": "OK",
+  "data": {
+    "job_id": 42,
+    "status": "cancelled",
+    "previous_status": "running"
+  }
+}
+```
+
+`previous_status` 是取消前的状态：`pending` 表示从队列移除消息，`running` 表示已发送 SIGTERM 终止 worker 中的任务。
+
+### 错误
+
+| HTTP | code | 说明 |
+| --- | --- | --- |
+| 403 | `FORBIDDEN` | 无项目写权限 |
+| 404 | `ANALYSIS_JOB_NOT_FOUND` | 任务不存在 |
+| 409 | `ANALYSIS_JOB_NOT_CANCELLABLE` | 任务状态非 pending/running（已是 success / failed / cancelled） |
+
+### 协作守卫说明
+
+`running` 状态下撤销时存在两种竞态：
+
+1. **撤销先于插件返回**：任务已发送 SIGTERM，但插件协程可能仍在收尾——`_run` 在 `analyze()` 返回后重读 DB 状态，若已标记 `cancelled` 则丢弃结果、不回写 `success`
+2. **插件先于撤销返回**：撤销请求到达时任务已 `success`，按状态机返回 `409 ANALYSIS_JOB_NOT_CANCELLABLE`
+
+---
+
 ## FFT 插件说明
 
 输入：等间隔采样的一维 numpy 数组 + 采样率（Hz）。

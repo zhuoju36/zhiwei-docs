@@ -53,6 +53,8 @@
 | 401 | `AUTH_ERROR` | 未认证 / 凭证无效 | 缺失或过期 token、密码错误、API Key 错误 |
 | 403 | `FORBIDDEN` | 已认证但无权限 | 非 admin 调用 admin-only 接口、非授权用户访问项目 |
 | 404 | `*_NOT_FOUND` | 资源不存在 | 路径 ID 无效（`PROJECT_NOT_FOUND` / `DEVICE_NOT_FOUND` / `CHANNEL_NOT_FOUND` / `USER_NOT_FOUND` / `ALERT_NOT_FOUND` / `ANALYSIS_JOB_NOT_FOUND` 等） |
+| 404 | `NOT_FOUND` | 路由未匹配 | 访问不存在的路径（FastAPI 默认 404 已统一走信封） |
+| 405 | `METHOD_NOT_ALLOWED` | 方法不允许 | 对已有路径使用未声明的 HTTP 方法（已统一走信封） |
 | 409 | `USER_EXISTS` / `EMAIL_EXISTS` / `DEVICE_CODE_EXISTS` / `SENSOR_CODE_EXISTS` / `CHANNEL_CODE_EXISTS` / `ALERT_ALREADY_RESOLVED` / `SELF_PROTECTED` / `LAST_ADMIN` | 资源冲突 | 唯一键冲突或守卫触发 |
 | 413 | `MODEL_TOO_LARGE` | 请求体过大 | 模型文件超过 200MB |
 | 422 | `VALIDATION_ERROR` | 请求体验证失败 | 字段类型错误、必填缺失 |

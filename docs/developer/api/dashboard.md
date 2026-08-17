@@ -77,6 +77,40 @@
 
 ---
 
+## GET /api/v1/dashboard/overview
+
+项目地图聚合接口：一次返回所有可见项目的元信息 + 设备状态分布，供前端「项目地图」散点 + 浮窗展示。
+
+- 权限模型与 `GET /projects` 完全一致：admin 全量；普通用户仅返回 `user_projects` 中授权项目
+- 不分页、不接受过滤参数
+- `location=null` 的项目**仍出现**（前端用表格兜底渲染）
+- `device_stats.total` 严格等于 `online + offline + error` 之和；未知 status 归入 `offline` 桶
+
+### 响应 200
+
+```json
+{
+  "code": "OK",
+  "data": {
+    "projects": [
+      {
+        "id": 1,
+        "name": "钱塘江大桥监测",
+        "description": "主桥结构健康监测",
+        "location": {
+          "lat": 30.198,
+          "lng": 120.215,
+          "address": "浙江省杭州市钱塘江大桥"
+        },
+        "device_stats": { "total": 12, "online": 10, "offline": 1, "error": 1 }
+      }
+    ]
+  }
+}
+```
+
+---
+
 ## curl 示例
 
 ```bash
