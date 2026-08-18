@@ -2,6 +2,22 @@
 
 本页面跟踪前端与文档站（`shm-docs`）的变更。后端变更详见 `shm-backend` 仓库的 `CHANGELOG` 与 release notes。
 
+## 2026-08-18（v0.1.9）
+
+### 新增
+
+- [docs] `developer/frontend/index.md`：补「3D 数字孪生模块」段——Z-up 坐标系约定、`snapshotDefaultView/resetView`、多模型并发限流加载、`MeshLambertMaterial` 双面材质、视图按钮增加"默认"
+- [docs] `developer/frontend/index.md`：新增「主题切换（大屏）」章节——作用域限定在 `.dashboard`、入口仅 admin、三套预设主题（dark-tech / light / dark-emerald）、DataV canvas 颜色实时读取与重挂载、0 配置版本约定
+
+### 关联前端变更（v0.2.10）
+
+- [frontend] `SceneManager`：`camera.up = (0, 0, 1)` Z 轴向上；GridHelper 旋转到 XY 平面；`setView` 按 Z-up 重写（top 沿 +Z、front 沿 +X、left 沿 -Y）；新增 `snapshotDefaultView / resetView`（defaultView 含 near/far 避免大场景被远裁剪面裁掉）；gizmo 配色按 Z-up 惯例 X 红 / Y 蓝 / Z 绿
+- [frontend] `PointManager`：Sprite 名称偏移 `(0, 0, 0.45)` 沿 +Z 方向
+- [frontend] `stores/dashboard.ts`：新增 `successfulModels / successfulModelIds`，删除只取首个的 `currentModel`
+- [frontend] `Scene3D.vue`：props 改为 `modelIds: number[]`，并发限流 4 个加载多模型；模型材质改 `side: DoubleSide`；视图按钮增加"默认"
+- [frontend] `stores/app.ts` + `assets/styles/{variables,themes}.scss`：主题 token 体系，CSS 变量定义在 `.dashboard` 容器内；防闪烁 inline 脚本同步
+- [frontend] 新增 `views/Admin/ThemeManage.vue` 主题设置页（admin-only）；路由 `/admin/theme`；Admin 侧边栏加"主题设置"入口
+
 ## 2026-08-17（v0.1.8）
 
 ### 新增

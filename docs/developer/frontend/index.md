@@ -78,31 +78,37 @@ shm-frontend/
 ### SceneManager（场景管理 + 渲染循环）
 
 - 构造时创建 `Scene / PerspectiveCamera / WebGLRenderer / OrbitControls`，默认**无阻尼**（鼠标释放即停）
+- **坐标系约定**：相机 `up = (0, 0, 1)`，结构健康监测领域惯例的「Z 轴向上」；`OrbitControls` 跟随该约定旋转/平移
 - `setupLights`：环境光 + 方向光
-- `GridHelper(40, 40)`：空场景方向感
+- `GridHelper(40, 40)`：绕 X 旋转 +PI/2，平躺到 XY 平面（Z=0 水平地面）
 - `start()`：requestAnimationFrame 循环，每帧 `controls.update()` → `render(scene, camera)` → `renderGizmo()`
-- `fitToModel(obj, padding=0.2)`：**关键** —— `Box3.setFromObject` 计算包围盒，按 `fovV/fovH` 中较小者推出距离，让模型恰好填满视口；保留当前视角方向
-- `setView(direction: 'front'|'left'|'top')`：把相机摆到正交标准视图方向，保留当前距离
-- `renderGizmo()`：左上角画一个 XYZ 坐标系标记（AxesHelper + 圆锥箭头 + Sprite 文字），通过 `setViewport + setScissor` 隔离到 14% 区域；`syncGizmoCamera` 让 gizmo 跟随主相机方向旋转
+- `fitToModel(obj, padding=0.2)`：**关键** —— `Box3.setFromObject` 计算包围盒，按 `fovV/fovH` 中较小者推出距离 `distance`，让模型恰好填满视口；保留当前视角方向；按 `distance` 动态算 `near/far`，避免大场景被远裁剪面裁掉
+- `setView(direction: 'front'|'left'|'top')`：Z-up 语义下把相机摆到正交标准视图方向——`top` 沿 +Z 俯视水平面、`front` 沿 -X 看、`left` 沿 +Y 看；保留当前距离
+- `snapshotDefaultView()` / `resetView()`：把 fit 后的相机姿态（位置 + target + near/far）记为默认视角，"默认"按钮可一键恢复
+- `renderGizmo()`：左上角画一个 XYZ 坐标系标记（AxesHelper + 圆锥箭头 + Sprite 文字），配色遵循 Z-up 惯例——**X 红 / Y 蓝 / Z 绿**；通过 `setViewport + setScissor` 隔离到 14% 区域；`syncGizmoCamera` 让 gizmo camera 的 up 与主相机同步，渲染出真实方向
 
 ### ModelLoader（GLB/OBJ 加载）
 
 - `loadGLB(url)`：返回 `THREE.Group`，遍历 child 提取 `ifc_guid` / `point_ids` 到 userData
 - DRACO 解码路径：`/draco/`
+- 模型坐标系：GLB/OBJ 默认 Y-up 加载（GLTF 规范）；Z-up 世界中**不旋转模型**——模型与传感器位置均按业务约定的 Z-up 坐标系传入
 
 ### PointManager（测点渲染 + 交互）
 
 - `initPoints(visuals)`：每个测点 = Group({`Mesh` 球 + `Sprite` 名称}），球按 status 着色，名称 Sprite CanvasTexture 文字 + 半透明深色背板（深度测试关）
+- Z-up 世界下 Sprite 偏移为 `(0, 0, 0.45)`，即「测点上方」= 沿 +Z 方向抬升
 - `updatePoint(pointId, value, status)`：实时数据驱动颜色
 - `hoverPoint(pointId | null)`：目标放大 1.6x + 切白色，其他还原；`mouseleave` 时取消
 - `getPointByRay(raycaster)`：命中 mesh 反查 `pointId`
 
 ### Scene3D.vue（使用方）
 
-- 接收 `props.modelId`，watch 触发 `loadModel`
-- `loadModel` 内有 generation 计数（`loadGen`），快速切换项目时过期请求丢弃，objectURL 立即 revoke（避免 GLTFLoader 拿到已 revoke 的 blob）
-- `loadModel` 成功后 `applyWhiteMaterial(currentModel)`：把所有 mesh 换成 `MeshLambertMaterial`（白模风格，便于看 PBR 之前的几何结构）
-- 调 `sceneManager.fitToModel(currentModel)` 自适应视域
+- 接收 `props.modelIds: number[]`，watch 触发 `loadModels`——**加载当前项目的所有成功模型**，不再只取首个
+- `loadModels` 内有 generation 计数（`loadGen`），快速切换项目时过期请求丢弃，objectURL 立即 revoke（避免 GLTFLoader 拿到已 revoke 的 blob）
+- **并发限流 4 个**：用内部 worker 池跑 `getModelFileBlob` → `loadGLB` 流水线，避免一次下几十个 GLB 打爆后端连接；任一模型失败仅 `console.warn`，不影响整体加载
+- `loadModels` 成功后 `applyWhiteMaterial(currentModel)`：把所有 mesh 换成 `MeshLambertMaterial({ side: THREE.DoubleSide })`——白模风格 + **双面材质**渲染剖面/翻转法线时不会透明
+- 多模型加载完后调 `fitToAll()`：聚合所有模型的并集 `Box3`，按整体居中取景
+- 视图切换按钮：**前 / 左 / 俯 / 默认**——前三个调 `sceneManager.setView`，"默认"调 `sceneManager.resetView`（恢复最近一次 fit 后的相机姿态）
 - `setupInteraction()`：click / mousemove / mouseleave 监听器，命中测点调 `dashboardStore.selectChannel(channelIds[0])`
 
 ### 数据流
@@ -116,6 +122,33 @@ wsStore.latestData → watch → pointManager.updatePoint(sensorId, value, statu
 ```
 
 `utils/three/sensorVisuals.ts` 里的 `buildSensorVisuals` 是抽出的纯函数：`tests/unit/sensorVisuals.test.ts` 覆盖 10 用例（过滤 position、timestamp 最新、quality 映射、name 回退、空数组边界）。
+
+## 主题切换（大屏）
+
+数据大屏支持三种预设主题切换，**仅作用于大屏路由**（`/`），不影响数据分析 / 系统管理 / 登录页。
+
+### 设计约束
+
+- **作用域限定**：CSS 变量定义在 `.dashboard` 选择器下，覆盖层用 `html.theme-xxx .dashboard`，Analysis / Admin / Login 路由根容器均不带 `.dashboard` 类，主题样式天然不会泄露
+- **入口仅 admin**：主题设置入口放在 `/admin/theme`，路由 `requiresAdmin: true`；非 admin 用户看不到"系统管理"导航项，自然进不来
+- **持久化**：`localStorage.shm_theme`；切换时 `<html class="theme-xxx">` 由 `stores/app.ts` 的 watch 同步写入
+- **防闪烁**：`index.html` 的 inline 早期脚本在 `main.ts` 之前读 `localStorage` 写入主题类，避免刷新时主题闪烁
+- **0 配置版本**：仅前端 localStorage，不做跨设备同步；如需"全平台统一主题"后续加后端 `PlatformInfo.default_theme`
+
+### 三套主题
+
+| 主题 | 配色 | 适用 |
+| --- | --- | --- |
+| `dark-tech` | 深蓝 `#0a1a3a` + 青色 `#3de7c9` | 指挥中心 / 默认 |
+| `light` | 白底 + 蓝色 `#1e88e5` | 汇报 / 文档导出 |
+| `dark-emerald` | 深绿 `#0d2e2a` + 翠色 `#3ddc97` | 工厂 / 海事场景 |
+
+### 实现要点
+
+- **CSS 变量定义**：`src/assets/styles/variables.scss` 给 `.dashboard` 写 dark-tech 默认值；`themes.scss` 用 `html.theme-xxx .dashboard` 覆盖 light 与 dark-emerald
+- **状态色独立**：`--color-normal/warning/danger/info` 不随主题变化，"危险"任何主题下都是红色——这是语义色约定
+- **DataV canvas 颜色**：`PointPanel` 的 ScrollBoard 接受字符串颜色 prop，不解析 CSS 变量；用 `getComputedStyle` 实时读 `--bg-card-*` 给 DataV，并通过 `:key="appStore.theme"` 强制 ScrollBoard 在主题切换时重新挂载触发 canvas 重绘
+- **DataV BorderBox 边框**：`Index.vue` 的 `BORDER_COLOR` 改为 computed，从 `--border-box-color-1/2` 读取实现跟随主题
 
 ## 开发规范
 
