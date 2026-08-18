@@ -135,6 +135,22 @@ UNIQUE 约束：`(sensor_id, channel_code)`。
 | `created_at` | TIMESTAMPTZ | 创建时间 |
 | `finished_at` | TIMESTAMPTZ | 转换完成时间 |
 | `note` | TEXT | 备注 |
+| `display_color` | VARCHAR(9) | 加载时画布填充色：`#RRGGBB` 或 `#RRGGBBAA` |
+| `translation` | JSONB | 平移向量 `[x, y, z]`，新建行默认 `[0, 0, 0]` |
+| `rotation` | JSONB | 旋转四元数 `(x, y, z, w)`，新建行默认 `[0, 0, 0, 1]`（identity） |
+| `scale` | JSONB | 缩放向量 `[sx, sy, sz]`，新建行默认 `[1, 1, 1]` |
+
+视图变换字段语义与 glTF / Three.js `node` 一致；前端可通过 `PATCH /api/v1/models/{id}/transform` 部分更新 4 字段。
+
+### project_view_settings（v0.2.7：项目前端三维视图设置，项目级 1:1）
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `project_id` | INT PK + FK → projects ON DELETE CASCADE | 项目主键 |
+| `settings` | JSONB NOT NULL DEFAULT `'{}'::jsonb` | 视图设置 blob（形状见 `ViewSettings` Pydantic schema） |
+| `updated_at` | TIMESTAMPTZ NOT NULL DEFAULT `now()` | 自动维护；服务用 `INSERT … ON CONFLICT DO UPDATE` 整体替换 |
+
+`settings` 包含 `camera`（`position`/`target`/`up`/`zoom`）与 `display`（`background_color`/`show_grid`/`grid_size`/`show_axes`/`show_sensor_markers`）。**懒创建**：service 在 GET 时若行不存在就返回 Pydantic 默认值（`updated_at=null`），PUT 时才 INSERT/UPDATE。
 
 ### analysis_jobs（v0.4+）
 
@@ -213,6 +229,9 @@ SELECT add_retention_policy('readings', INTERVAL '7 days');
 | `af5a7548852c` | v0.8b | sensors / channels / readings；drop sensor_raw / sensor_feature；alerts / analysis_jobs 改 channel_id |
 | `c4f21bee2f8b` | v0.8c | 3d_models 表；drop `projects.model_file_key` |
 | `0c8f4e8484f3` | v0.9 | **重置重构**：point 并入 sensor（sensors 挂 device 下）；subitem → project；全部业务表重建 |
+| `f1f01d4a2fb2` | v0.9 | `note` 字段（devices / sensors / channels / 3d_models） |
+| `a1b2c3d4e5f6` | v0.2.7 | `3d_models` 加 4 列：`display_color` / `translation` / `rotation` / `scale`；存量行回填 identity 变换 |
+| `b2c3d4e5f6a7` | v0.2.7 | 新表 `project_view_settings`（1:1，懒创建） |
 
 ## 告警生命周期（v0.8b+）
 

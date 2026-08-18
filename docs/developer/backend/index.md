@@ -287,7 +287,8 @@ OAuth2 password flow 使用 `OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login",
 | `GET /setup/status`、`POST /setup/init-admin`（v0.6+） | `routers/setup.py` |
 | `GET/PUT /platform`（v0.7+） | `routers/platform.py` |
 | `GET /protocols`（v0.8+） | `routers/protocols.py` |
-| 3D 模型 CRUD（v0.8c） | `routers/models.py` |
+| 3D 模型 CRUD + 视图变换 `PATCH /models/{id}/transform`（v0.2.7） | `routers/models.py` |
+| 项目前端三维视图设置 `GET/PUT /projects/{id}/view-settings`（v0.2.7，懒创建） | `routers/projects.py` |
 
 ### 通知通道（`app/notifications/`，v0.5）
 
